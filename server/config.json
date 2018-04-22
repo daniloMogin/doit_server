@@ -1,0 +1,17 @@
+{
+    "development": {
+        "username": "danilo",
+        "password": "Testtest12",
+        "database": "doit_db",
+        "host": "localhost",
+        "dialect": "mongoDB",
+        "instanceName": "doit_db"
+    },
+    "production": {
+        "username": "update me",
+        "password": "update me",
+        "database": "update me",
+        "host": "update me",
+        "dialect": "update me"
+    }
+}

@@ -1,0 +1,39 @@
+extends partials/layout
+
+block content
+  .main-grid
+    h1= title
+    .wrapper
+      h2 Welcome to DOIT
+      
+      form.entry-form(method='post')
+        label Name
+        input(type='text', name='name', placeholder='Name', required='', autocomplete='off', autofocus)
+        label Lastname
+        input(type='text', name='lastname', placeholder='Lastname', required='', autocomplete='off')
+        label Username
+        input(type='text', name='username', placeholder='Username', required='', autocomplete='off')
+        label Password
+        input(type='password', name='password', placeholder='Password', required='', autocomplete='off')
+        label Email
+        input(type='text', name='email', placeholder='Email', required='', autocomplete='off')
+        label Status
+        input(type='text', name='status', placeholder='Status', required='', autocomplete='off')
+        label City
+        input(type='text', name='city', placeholder='City', required='', autocomplete='off')
+        label Country
+        input(type='text', name='country', placeholder='Country', required='', autocomplete='off')
+        label Location change
+        input(type='text', name='locationChange', placeholder='Location change', required='', autocomplete='off')
+        label Job type
+        input(type='text', name='jobType', placeholder='Job type', required='', autocomplete='off')
+        label Experience
+        input(type='text', name='experience', placeholder='Experience', required='', autocomplete='off')
+        label Gender
+        input(type='text', name='gender', placeholder='Gender', required='', autocomplete='off')
+        label DoB
+        input(type='text', name='DoB', placeholder='DoB', required='', autocomplete='off')
+        label Additional Info
+        input(type='text', name='additionalInfo', placeholder='AdditionalInfo', required='', autocomplete='off')
+        button.btn(type='submit') Register
+        a.forgot-pass(href='/forgot') Forgot Password?
