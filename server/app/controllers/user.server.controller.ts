@@ -24,9 +24,9 @@ class UserController {
     try {
       const findUser = await user_db.findUser();
       if (findUser.length > 0) {
-        res.status(200).json({ data: findUser });
+        res.status(200).json({ findUser });
       } else {
-        res.status(500).json({ error: findUser });
+        res.status(500).json({ findUser });
       }
     } catch (error) {
       console.log(
@@ -40,9 +40,9 @@ class UserController {
     try {
       const findUserById = await user_db.findUserById(req);
       if (findUserById != null) {
-        res.status(200).json({ data: findUserById });
+        res.status(200).json({ findUserById });
       } else {
-        res.status(500).json({ error: findUserById });
+        res.status(500).json({ findUserById });
       }
     } catch (error) {
       console.log(
@@ -106,10 +106,15 @@ class UserController {
 
     try {
       const createUser = await user_db.createUser(...user);
-      if (createUser.data) {
-        res.status(201).json({ data: createUser });
+      console.log(`createUser`);
+      console.log(createUser);
+      console.log(createUser.errmsg);
+      if (createUser.errmsg === undefined) {
+        console.log(`aaaaaa`);
+        res.status(201).json({ createUser });
       } else {
-        res.status(500).json({ error: createUser });
+        console.log(`bbbbb`);
+        res.status(500).json({ createUser });
       }
     } catch (error) {
       console.log('Unable to connect to db ', error);
@@ -153,12 +158,12 @@ class UserController {
 
     try {
       const findUserById = await user_db.findUserById(req);
-    //   console.log(`findUserById`);
-    //   console.log(findUserById);
+      //   console.log(`findUserById`);
+      //   console.log(findUserById);
       if (findUserById != null) {
         const updateUser = await user_db.updateUser(...user);
       } else {
-        res.status(500).json({ error: findUserById });
+        res.status(500).json({ findUserById });
       }
     } catch (error) {
       console.log('Unable to connect to db ', error);

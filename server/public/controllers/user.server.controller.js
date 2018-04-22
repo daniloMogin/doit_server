@@ -27,10 +27,10 @@ class UserController {
             try {
                 const findUser = yield user_db.findUser();
                 if (findUser.length > 0) {
-                    res.status(200).json({ data: findUser });
+                    res.status(200).json({ findUser });
                 }
                 else {
-                    res.status(500).json({ error: findUser });
+                    res.status(500).json({ findUser });
                 }
             }
             catch (error) {
@@ -43,10 +43,10 @@ class UserController {
             try {
                 const findUserById = yield user_db.findUserById(req);
                 if (findUserById != null) {
-                    res.status(200).json({ data: findUserById });
+                    res.status(200).json({ findUserById });
                 }
                 else {
-                    res.status(500).json({ error: findUserById });
+                    res.status(500).json({ findUserById });
                 }
             }
             catch (error) {
@@ -106,11 +106,16 @@ class UserController {
             ];
             try {
                 const createUser = yield user_db.createUser(...user);
-                if (createUser.data) {
-                    res.status(201).json({ data: createUser });
+                console.log(`createUser`);
+                console.log(createUser);
+                console.log(createUser.errmsg);
+                if (createUser.errmsg === undefined) {
+                    console.log(`aaaaaa`);
+                    res.status(201).json({ createUser });
                 }
                 else {
-                    res.status(500).json({ error: createUser });
+                    console.log(`bbbbb`);
+                    res.status(500).json({ createUser });
                 }
             }
             catch (error) {
@@ -158,7 +163,7 @@ class UserController {
                     const updateUser = yield user_db.updateUser(...user);
                 }
                 else {
-                    res.status(500).json({ error: findUserById });
+                    res.status(500).json({ findUserById });
                 }
             }
             catch (error) {
