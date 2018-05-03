@@ -23,10 +23,11 @@ class UserController {
   public async getUsers(req: Request, res: Response) {
     try {
       const findUser = await user_db.findUser();
+
       if (findUser.length > 0) {
         res.status(200).json({ findUser });
       } else {
-        res.status(500).json({ findUser });
+        res.status(500).json({ 'error': findUser });
       }
     } catch (error) {
       console.log(
