@@ -21,7 +21,8 @@ export default class CompanyDBCalls {
     public findCompanyById = (req: Request, res: Response) => {
         return new Promise(resolve => {
             try {
-                CompanyModel.findOne({ companyId: req.params.companyId }, '-_id')
+                const query = { companyId: req.params.id }
+                CompanyModel.findOne(query, '-_id')
                     .then(data => {
                         resolve(data);
                     })
@@ -62,7 +63,7 @@ export default class CompanyDBCalls {
         return new Promise(resolve => {
             try {
                 const query = { companyId: company.companyId }
-                const result = {
+                const result = new CompanyModel({
                     name: company.name,
                     description: company.description,
                     city: company.city,
@@ -70,7 +71,7 @@ export default class CompanyDBCalls {
                     phone: company.phone,
                     email: company.email,
                     website: company.website
-                };
+                });
 
                 CompanyModel.findOneAndUpdate(query, result)
                     .then(data => {
