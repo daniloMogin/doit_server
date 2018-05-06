@@ -1,6 +1,5 @@
 import { Schema, model } from 'mongoose';
 import * as mongoose from 'mongoose';
-const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 import { IUser } from './interfaces/user.server.interface';
 
@@ -68,7 +67,6 @@ export const UserSchema: Schema = new Schema({
     ref: 'Role'
   }]
 });
-UserSchema.plugin(AutoIncrement, { inc_field: 'id' });
 
 // const User = mongoose.model<IUser>('User', UserSchema);
 export default model<IUser>('User', UserSchema);

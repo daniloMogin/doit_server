@@ -1,6 +1,5 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-var dbConnect = require('./../public/config/constants/dbConnect');
 var mid = require('../public/config/middlewares/base/middlewaresBase'),
     express = require('express'),
     http = require('http'),

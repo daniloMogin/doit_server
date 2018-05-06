@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-const mongoose = require("mongoose");
-const AutoIncrement = require('mongoose-sequence')(mongoose);
 exports.UserSchema = new mongoose_1.Schema({
     name: {
         type: String,
@@ -67,5 +65,4 @@ exports.UserSchema = new mongoose_1.Schema({
             ref: 'Role'
         }]
 });
-exports.UserSchema.plugin(AutoIncrement, { inc_field: 'id' });
 exports.default = mongoose_1.model('User', exports.UserSchema);
