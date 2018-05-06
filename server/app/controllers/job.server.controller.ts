@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import JobModel from '../models/job.server.model';
 import JobDBCalls from '../repo/job_repo/job.server.repo';
-import IJob from '../models/interfaces/job.server.interface';
+import { IJob } from '../models/interfaces/job.server.interface';
 
 const job_db = new JobDBCalls();
 
@@ -13,21 +13,18 @@ export default class JobController {
             if (findJobs.length > 0) {
                 res.status(200).json({
                     findJobs
-                })
+                });
             } else {
                 res.status(500).json({
-                    'error': findJobs
-                })
+                    error: findJobs
+                });
             }
         } catch (err) {
-            console.error(
-                'Unable to fetch Jobs database, Error: ',
-                err
-            );
+            console.error('Unable to fetch Jobs database, Error: ', err);
         }
     }
 
-    public async getJobById(req:Request, res: Response) {
+    public async getJobById(req: Request, res: Response) {
         try {
             const findJobs = await job_db.findJobById(req, res);
             console.log(findJobs);
@@ -37,20 +34,17 @@ export default class JobController {
                 });
             } else {
                 res.status(500).json({
-                    'error': findJobs
+                    error: findJobs
                 });
             }
         } catch (err) {
-            console.error(
-                'Unable to fetch Jobs database, Error: ',
-                err
-            );
+            console.error('Unable to fetch Jobs database, Error: ', err);
         }
     }
 
     public async getJobsByName(req: Request, res: Response) {
         try {
-            const findJobs:any = await job_db.findJobByName(req, res);
+            const findJobs: any = await job_db.findJobByName(req, res);
             console.log(findJobs);
             if (findJobs.length > 0) {
                 res.status(200).json({
@@ -58,20 +52,17 @@ export default class JobController {
                 });
             } else {
                 res.status(500).json({
-                    'error': findJobs
+                    error: findJobs
                 });
             }
         } catch (err) {
-            console.error(
-                'Unable to fetch Jobs database, Error: ',
-                err
-            );
+            console.error('Unable to fetch Jobs database, Error: ', err);
         }
     }
 
     public async getJobsByCity(req: Request, res: Response) {
         try {
-            const findJobs:any = await job_db.findJobByCity(req, res);
+            const findJobs: any = await job_db.findJobByCity(req, res);
             console.log(findJobs);
             if (findJobs.length > 0) {
                 res.status(200).json({
@@ -79,20 +70,17 @@ export default class JobController {
                 });
             } else {
                 res.status(500).json({
-                    'error': findJobs
+                    error: findJobs
                 });
             }
         } catch (err) {
-            console.error(
-                'Unable to fetch Jobs database, Error: ',
-                err
-            );
+            console.error('Unable to fetch Jobs database, Error: ', err);
         }
     }
-    
+
     public async getJobsByCountry(req: Request, res: Response) {
         try {
-            const findJobs:any = await job_db.findJobByCountry(req, res);
+            const findJobs: any = await job_db.findJobByCountry(req, res);
             console.log(findJobs);
             if (findJobs.length > 0) {
                 res.status(200).json({
@@ -100,20 +88,17 @@ export default class JobController {
                 });
             } else {
                 res.status(500).json({
-                    'error': findJobs
+                    error: findJobs
                 });
             }
         } catch (err) {
-            console.error(
-                'Unable to fetch Jobs database, Error: ',
-                err
-            );
+            console.error('Unable to fetch Jobs database, Error: ', err);
         }
     }
-    
+
     public async getJobsByKeyword(req: Request, res: Response) {
         try {
-            const findJobs:any = await job_db.findJobByKeyword(req, res);
+            const findJobs: any = await job_db.findJobByKeyword(req, res);
             console.log(findJobs);
             if (findJobs.length > 0) {
                 res.status(200).json({
@@ -121,20 +106,17 @@ export default class JobController {
                 });
             } else {
                 res.status(500).json({
-                    'error': findJobs
+                    error: findJobs
                 });
             }
         } catch (err) {
-            console.error(
-                'Unable to fetch Jobs database, Error: ',
-                err
-            );
+            console.error('Unable to fetch Jobs database, Error: ', err);
         }
     }
 
     public async getJobsByType(req: Request, res: Response) {
         try {
-            const findJobs:any = await job_db.findJobByType(req, res);
+            const findJobs: any = await job_db.findJobByType(req, res);
             console.log(findJobs);
             if (findJobs.length > 0) {
                 res.status(200).json({
@@ -142,14 +124,11 @@ export default class JobController {
                 });
             } else {
                 res.status(500).json({
-                    'error': findJobs
+                    error: findJobs
                 });
             }
         } catch (err) {
-            console.error(
-                'Unable to fetch Jobs database, Error: ',
-                err
-            );
+            console.error('Unable to fetch Jobs database, Error: ', err);
         }
     }
 
@@ -164,7 +143,7 @@ export default class JobController {
             categories: req.body.categories,
             experience: req.body.experience,
             salary: req.body.salary
-        }
+        };
         try {
             const createJob: any = await job_db.createJob(job, req, res);
             console.log(
@@ -172,11 +151,10 @@ export default class JobController {
                 ${createJob}`
             );
             if (createJob.errors === undefined) {
-                res.status(200)
-                    .json({
-                        'message': 'Job Created Successufully!',
-                        'createInfo': createJob
-                    });
+                res.status(200).json({
+                    message: 'Job Created Successufully!',
+                    createInfo: createJob
+                });
             } else {
                 res.status(500).json({ createJob });
             }
@@ -184,7 +162,7 @@ export default class JobController {
             console.error(
                 'Unable to connect to db and fetch all jobs. Error is ',
                 err
-            )
+            );
         }
     }
 
@@ -200,54 +178,47 @@ export default class JobController {
             categories: req.body.categories,
             experience: req.body.experience,
             salary: req.body.salary
-        }
+        };
         try {
             const updateJob: any = await job_db.updateJob(job, req, res);
             console.log(updateJob);
             if (updateJob !== null) {
-                res.status(200)
-                    .json({
-                        'message': 'Successfully Updated Job Info',
-                        'updateInfo': updateJob
-                    });
+                res.status(200).json({
+                    message: 'Successfully Updated Job Info',
+                    updateInfo: updateJob
+                });
             } else {
-                res.status(500)
-                    .json({
-                        'error': updateJob
-                    });
+                res.status(500).json({
+                    error: updateJob
+                });
             }
         } catch (err) {
             console.error(
                 'Unable to connect to db and fetch all jobs. Error is ',
                 err
-            )
+            );
         }
     }
 
     public async deleteJob(req: Request, res: Response) {
         const job = {
             jobId: req.body.id
-        }
+        };
         try {
-            const deleteJob = await job_db.deleteJob(job, req, res)
+            const deleteJob = await job_db.deleteJob(job, req, res);
             console.log(deleteJob);
             if (deleteJob !== null) {
-                res.status(200)
-                    .json({
-                        'message': 'Successfully Delete Company',
-                        'deleteInfo': deleteJob
-                    })
+                res.status(200).json({
+                    message: 'Successfully Delete Company',
+                    deleteInfo: deleteJob
+                });
             } else {
-                res.status(500)
-                    .json({
-                        'error': deleteJob
-                    })
+                res.status(500).json({
+                    error: deleteJob
+                });
             }
         } catch (err) {
-            console.error(
-                'Unable to fetch Jobs database, Error: ',
-                err
-            );
+            console.error('Unable to fetch Jobs database, Error: ', err);
         }
     }
 }

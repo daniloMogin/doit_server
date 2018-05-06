@@ -38,11 +38,11 @@ exports.UserSchema = new mongoose_1.Schema({
     },
     locationChange: {
         type: Boolean,
-        required: true
+        required: true,
+        default: false
     },
     jobType: {
-        type: String,
-        required: true
+        type: String
     },
     experience: {
         type: String,
@@ -57,12 +57,26 @@ exports.UserSchema = new mongoose_1.Schema({
         required: true
     },
     additionalInfo: {
-        type: String,
-        required: true
+        type: String
     },
-    role: [{
+    role: [
+        {
             type: mongoose_1.Schema.Types.ObjectId,
-            ref: 'Role'
-        }]
+            ref: 'Role',
+            required: true
+        }
+    ],
+    company: [
+        {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: 'Company'
+        }
+    ],
+    job: [
+        {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: 'Job'
+        }
+    ]
 });
 exports.default = mongoose_1.model('User', exports.UserSchema);
