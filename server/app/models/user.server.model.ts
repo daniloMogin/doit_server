@@ -62,7 +62,11 @@ export const UserSchema: Schema = new Schema({
   additionalInfo: {
     type: String,
     required: true
-  }
+  },
+  role: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Role'
+  }]
 });
 UserSchema.plugin(AutoIncrement, { inc_field: 'id' });
 

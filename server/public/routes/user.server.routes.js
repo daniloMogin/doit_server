@@ -8,12 +8,15 @@ class UserRoutes {
     }
     get routes() {
         let controller = this._userController;
+        router.get('/Users/GetUsers', controller.renderUsers);
         router.get('/User/GetUsers', controller.getUsers);
-        router.get('/User/GetUserById/:userId', controller.getUserByUserId);
-        router.get('/User/GetUsersByCompany', controller.getUserByUserCompany);
+        router.get('/User/GetUserById/:userId', controller.getUserById);
+        router.get('/User/GetUsersByCompany', controller.getUserByCompany);
+        router.get('/User/GetUsersByRole', controller.getUserByRole);
         router.put('/User/Update/:userId', controller.updateUser);
+        router.post('/User/Login', controller.authenticate);
         router.get('/User/Register', controller.renderRegister);
-        router.post('/User/Register', controller.createUser);
+        router.post('/User/Register', controller.register);
         return router;
     }
 }

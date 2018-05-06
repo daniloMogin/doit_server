@@ -1,7 +1,7 @@
 "use strict";
 class Constants {
 }
-Constants.secret = 'OurSuperSecretCookieSecret';
+Constants.secret = 'BeSmartDOIT';
 Constants.mailConfig = {
     'email': 'takozasvasta@gmail.com',
     'clientId': '365633834640-loeehmq5r18lu448f2o89heirpfmeh1b.apps.googleusercontent.com',

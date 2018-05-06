@@ -3,11 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 exports.UserCompanySchema = new mongoose_1.Schema({
     userId: {
-        type: String,
+        type: Number,
         required: true
     },
     comapnyId: {
-        type: String,
+        type: Number,
         required: true
     },
 });

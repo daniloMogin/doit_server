@@ -1,5 +1,5 @@
 class Constants {
-  static secret: string = 'OurSuperSecretCookieSecret';
+  static secret: string = 'BeSmartDOIT';
 	public static mailConfig = {
 		'email': 'takozasvasta@gmail.com',
 		'clientId': '365633834640-loeehmq5r18lu448f2o89heirpfmeh1b.apps.googleusercontent.com',

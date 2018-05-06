@@ -4,11 +4,11 @@ import { IUserCompany } from './interfaces/user-company.server.interface';
 
 export const UserCompanySchema: Schema = new Schema({
   userId: {
-    type: String,
+    type: Number,
     required: true
   },
   comapnyId: {
-    type: String,
+    type: Number,
     required: true
   },
 });

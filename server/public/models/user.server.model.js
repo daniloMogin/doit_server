@@ -61,7 +61,11 @@ exports.UserSchema = new mongoose_1.Schema({
     additionalInfo: {
         type: String,
         required: true
-    }
+    },
+    role: [{
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: 'Role'
+        }]
 });
 exports.UserSchema.plugin(AutoIncrement, { inc_field: 'id' });
 exports.default = mongoose_1.model('User', exports.UserSchema);

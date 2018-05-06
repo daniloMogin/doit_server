@@ -15,4 +15,5 @@ export interface IUser extends mongoose.Document {
     gender: string;
     DoB: string;
     additionalInfo: string;
+    role: string
 }
