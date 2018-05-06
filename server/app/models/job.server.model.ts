@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import IJob from './interfaces/job.server.interface';
+import { IJob } from './interfaces/job.server.interface';
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 export const JobSchema: mongoose.Schema = new mongoose.Schema({

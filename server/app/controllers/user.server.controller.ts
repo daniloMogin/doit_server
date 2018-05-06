@@ -5,12 +5,14 @@ import * as _ from 'lodash';
 const config = require('./../config/constants/constants');
 
 import UserModel from '../models/user.server.model';
-import UserCompanyModel from '../models/user-company.server.model';
+import { IUser } from './../models/interfaces/user.server.interface';
 
 const UserDBCalls = require('../repo/user_repo/user.server.repo');
+const RoleDBCalls = require('../repo/role_repo/role.server.repo');
 const Functions = require('../share/functions.server');
 
 const user_db = new UserDBCalls();
+const role_db = new RoleDBCalls();
 const func = new Functions();
 
 class UserController {
@@ -52,10 +54,9 @@ class UserController {
                     res.status(500).json({ findUser });
                 }
             } catch (error) {
-                console.log(
-                    'Unable to connect to db and fetch all users. Error is ',
-                    error
-                );
+                res.status(500).json({
+                    error: 'Get all users error ' + error
+                });
             }
         } else {
             return res
@@ -76,10 +77,9 @@ class UserController {
                     res.status(500).json({ findUserById });
                 }
             } catch (error) {
-                console.log(
-                    'Unable to connect to db and fetch all users. Error is ',
-                    error
-                );
+                res.status(500).json({
+                    error: 'Get user by id error ' + error
+                });
             }
         } else {
             return res
@@ -96,7 +96,8 @@ class UserController {
         if (token) {
             try {
                 const findUserByUsername = await user_db.findUserByUsername(
-                    username
+                    username,
+                    res
                 );
                 if (findUserByUsername != null) {
                     res.status(200).json({ findUserByUsername });
@@ -104,10 +105,9 @@ class UserController {
                     res.status(500).json({ findUserByUsername });
                 }
             } catch (error) {
-                console.log(
-                    'Unable to connect to db and fetch all users. Error is ',
-                    error
-                );
+                res.status(500).json({
+                    error: 'Get user by username error ' + error
+                });
             }
         } else {
             return res
@@ -129,10 +129,9 @@ class UserController {
                         res.status(500).json({ error });
                     });
             } catch (error) {
-                console.log(
-                    'Unable to connect to db and fetch all users. Error is ',
-                    error
-                );
+                res.status(500).json({
+                    error: 'Get user by company ' + error
+                });
             }
         } else {
             return res
@@ -154,10 +153,9 @@ class UserController {
                         res.status(500).json({ error });
                     });
             } catch (error) {
-                console.log(
-                    'Unable to connect to db and fetch all users. Error is ',
-                    error
-                );
+                res.status(500).json({
+                    error: 'Get user by role ' + error
+                });
             }
         } else {
             return res
@@ -170,6 +168,16 @@ class UserController {
     async (req: Request, res: Response) => {
         const token: string = func.getToken(req.headers);
         if (token) {
+            const roleArr: string[] = req.body.role.split(',');
+            let roleIdArr: number[] = [];
+            for (let i: number = 0; i < roleArr.length; i++) {
+                const findRoleByName = await role_db.findRoleByName(
+                    roleArr[i].trim()
+                );
+                if (!_.isNil(findRoleByName)) {
+                    roleIdArr.push(findRoleByName._id);
+                }
+            }
             const name: string = req.body.name;
             const lastname: string = req.body.lastname;
             const username: string = req.body.username;
@@ -200,7 +208,8 @@ class UserController {
                     experience,
                     gender,
                     DoB,
-                    additionalInfo
+                    additionalInfo,
+                    role: roleIdArr
                 }
             ];
 
@@ -212,7 +221,7 @@ class UserController {
                     res.status(500).json({ createUser });
                 }
             } catch (error) {
-                console.log('Unable to connect to db ', error);
+                res.status(500).json({ error: 'Create user error ' + error });
             }
         } else {
             return res
@@ -225,6 +234,16 @@ class UserController {
     async (req: Request, res: Response) => {
         const token: string = func.getToken(req.headers);
         if (token) {
+            const roleArr: string[] = req.body.role.split(',');
+            let roleIdArr: number[] = [];
+            for (let i: number = 0; i < roleArr.length; i++) {
+                const findRoleByName = await role_db.findRoleByName(
+                    roleArr[i].trim()
+                );
+                if (!_.isNil(findRoleByName)) {
+                    roleIdArr.push(findRoleByName._id);
+                }
+            }
             const name: string = req.body.name;
             const lastname: string = req.body.lastname;
             const username: string = req.body.username;
@@ -255,21 +274,21 @@ class UserController {
                     experience,
                     gender,
                     DoB,
-                    additionalInfo
+                    additionalInfo,
+                    role: roleIdArr
                 }
             ];
 
             try {
                 const findUserById = await user_db.findUserById(req);
-                //   console.log(`findUserById`);
-                //   console.log(findUserById);
                 if (findUserById != null) {
-                    const updateUser = await user_db.updateUser(...user);
+                    const updateUser = await user_db.updateUser(...user, req);
+                    res.status(201).json({ updateUser });
                 } else {
                     res.status(500).json({ findUserById });
                 }
             } catch (error) {
-                console.log('Unable to connect to db ', error);
+                res.status(500).json({ error: 'Update user error ' + error });
             }
         } else {
             return res
@@ -310,13 +329,22 @@ class UserController {
     public async register(req: Request, res: Response) {
         try {
             const findUserByUsername = await user_db.findUserByUsername(
-                req.body.username
+                req.body.username,
+                res
             );
             if (findUserByUsername != null) {
                 res
                     .status(403)
                     .json({ error: 'User with that username already exists' });
             } else {
+                const roleArr: string[] = req.body.role.split(',');
+                let roleIdArr: number[] = [];
+                for (let i: number = 0; i < roleArr.length; i++) {
+                    const findRoleByName = await role_db.findRoleByName(
+                        roleArr[i].trim()
+                    );
+                    roleIdArr.push(findRoleByName._id);
+                }
                 const name: string = req.body.name;
                 const lastname: string = req.body.lastname;
                 const username: string = req.body.username;
@@ -346,7 +374,8 @@ class UserController {
                         experience,
                         gender,
                         DoB,
-                        additionalInfo
+                        additionalInfo,
+                        roleIdArr
                     }
                 ];
                 const validate_register = await func.validateRegister(
@@ -359,13 +388,15 @@ class UserController {
                     );
                     if (createUser.errmsg === undefined) {
                         res.status(200).json({ createUser });
+                    } else {
+                        res.status(500).json({ createUser });
                     }
                 } else {
                     res.status(500).json({ validate_register });
                 }
             }
         } catch (error) {
-            console.log('User error ', error);
+            res.status(500).json({ error: 'Register user error ' + error });
         }
     }
 }

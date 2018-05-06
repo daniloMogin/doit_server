@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-export default interface ICompany extends mongoose.Document {
+export interface ICompany extends mongoose.Document {
     name: string;
     description: string;
     city: string;

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import JobModel from '../../models/job.server.model';
-import IJob from '../../models/interfaces/job.server.interface';
+import { IJob } from '../../models/interfaces/job.server.interface';
 
 export default class JobDBCalls {
     public findJob(req: Request, res: Response) {
@@ -12,7 +12,7 @@ export default class JobDBCalls {
                     })
                     .catch(error => {
                         resolve(error);
-                    })
+                    });
             } catch (err) {
                 console.error(err);
             }
@@ -28,7 +28,7 @@ export default class JobDBCalls {
                     })
                     .catch(error => {
                         resolve(error);
-                    })
+                    });
             } catch (err) {
                 console.error(err);
             }
@@ -44,7 +44,7 @@ export default class JobDBCalls {
                     })
                     .catch(error => {
                         resolve(error);
-                    })
+                    });
             } catch (err) {
                 console.error(err);
             }
@@ -60,7 +60,7 @@ export default class JobDBCalls {
                     })
                     .catch(error => {
                         resolve(error);
-                    })
+                    });
             } catch (err) {
                 console.error(err);
             }
@@ -76,7 +76,7 @@ export default class JobDBCalls {
                     })
                     .catch(error => {
                         resolve(error);
-                    })
+                    });
             } catch (err) {
                 console.error(err);
             }
@@ -92,7 +92,7 @@ export default class JobDBCalls {
                     })
                     .catch(error => {
                         resolve(error);
-                    })
+                    });
             } catch (err) {
                 console.error(err);
             }
@@ -108,7 +108,7 @@ export default class JobDBCalls {
                     })
                     .catch(error => {
                         resolve(error);
-                    })
+                    });
             } catch (err) {
                 console.error(err);
             }
@@ -130,17 +130,18 @@ export default class JobDBCalls {
                     salary: job.salary
                 });
 
-                result.save()
+                result
+                    .save()
                     .then(data => {
-                        resolve(data)
+                        resolve(data);
                     })
                     .catch(error => {
                         resolve(error);
-                    })
+                    });
             } catch (err) {
                 console.error(err);
             }
-        })
+        });
     }
 
     public updateJob(job, req: Request, res: Response) {
@@ -165,7 +166,7 @@ export default class JobDBCalls {
                     })
                     .catch(error => {
                         resolve(error);
-                    })
+                    });
             } catch (err) {
                 console.error(err);
             }
@@ -183,10 +184,10 @@ export default class JobDBCalls {
                     })
                     .catch(error => {
                         resolve(error);
-                    })
+                    });
             } catch (err) {
                 console.error(err);
             }
-        })
+        });
     }
 }

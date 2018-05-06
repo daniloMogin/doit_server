@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 // import RoleModel from '../models/user.server.model';
-import RoleModel from '../models/role.server.model';
+import RoleModel from '../../models/role.server.model';
 // import UserRoleModel from '../models/user-role.server.model';
 
 class RoleDBCalls {
@@ -16,7 +16,23 @@ class RoleDBCalls {
                         resolve(error);
                     });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({ error });
+            }
+        });
+    };
+
+    public findRoleByName = (name, req: Request, res: Response) => {
+        return new Promise(resolve => {
+            try {
+                RoleModel.findOne({ name })
+                    .then(data => {
+                        resolve(data);
+                    })
+                    .catch(error => {
+                        resolve(error);
+                    });
+            } catch (error) {
+                res.status(500).json({ error });
             }
         });
     };
@@ -24,8 +40,6 @@ class RoleDBCalls {
     public findRoleById = (req: Request, res: Response) => {
         return new Promise(resolve => {
             try {
-                console.log(`req.body`);
-                console.log(req.body);
                 RoleModel.findOne({ _id: req.params.roleId })
                     .then(data => {
                         resolve(data);
@@ -34,7 +48,7 @@ class RoleDBCalls {
                         resolve(error);
                     });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({ error });
             }
         });
     };
@@ -56,7 +70,7 @@ class RoleDBCalls {
                         resolve(error);
                     });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({ error });
             }
         });
     };
@@ -64,30 +78,25 @@ class RoleDBCalls {
     public updateRole = (role, req: Request, res: Response) => {
         return new Promise(resolve => {
             try {
-                const query = { name: role.name };
-                const result = [
+                const query = { _id: req.params.roleId };
+                const result = {
+                    name: role.name,
+                    description: role.description
+                };
+                RoleModel.findOneAndUpdate(
+                    query,
+                    { $set: result },
                     {
-                        name: role.name,
-                        description: role.description
+                        upsert: true,
+                        new: true
+                    },
+                    (err, doc) => {
+                        if (err) throw err;
+                        resolve(doc);
                     }
-                ];
-
-                console.log(`result`);
-                console.log(result);
-                // RoleModel.update(query, result, {upsert:true}, function(err, doc){
-                //     if (err) throw err
-                //     resolve(doc);
-                // });
-                // result
-                //   .update(result)
-                //   .then(data => {
-                //     resolve(`data ${data}`);
-                //   })
-                //   .catch(error => {
-                //     resolve(`error ${error}`);
-                //   });
+                );
             } catch (error) {
-                console.log(error);
+                res.status(500).json({ error });
             }
         });
     };

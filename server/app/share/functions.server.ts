@@ -237,7 +237,8 @@ class Functions {
 			experience: exper_validate,
 			gender: gender_validate,
 			DoB: birthday,
-			additionalInfo: additionalInfo_validate
+			additionalInfo: additionalInfo_validate,
+			role: user.roleIdArr
 		};
 		return result;
 	};

@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import ICompany from './interfaces/company.server.interface';
+import { ICompany } from './interfaces/company.server.interface';
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 export const CompanySchema: mongoose.Schema = new mongoose.Schema({

@@ -12,15 +12,15 @@ class UserDBCalls {
             return new Promise(resolve => {
                 try {
                     user_server_model_1.default.find()
-                        .then(data => {
-                        resolve(data);
-                    })
-                        .catch(error => {
-                        resolve(error);
+                        .populate('role')
+                        .exec((err, user) => {
+                        if (err)
+                            throw err;
+                        resolve(user);
                     });
                 }
                 catch (error) {
-                    console.log(error);
+                    res.status(500).json({ error });
                 }
             });
         };
@@ -36,11 +36,11 @@ class UserDBCalls {
                     });
                 }
                 catch (error) {
-                    console.log(error);
+                    res.status(500).json({ error });
                 }
             });
         };
-        this.findUserByUsername = (username) => {
+        this.findUserByUsername = (username, res) => {
             return new Promise(resolve => {
                 try {
                     user_server_model_1.default.findOne({ username: username })
@@ -52,7 +52,7 @@ class UserDBCalls {
                     });
                 }
                 catch (error) {
-                    console.log(error);
+                    res.status(500).json({ error });
                 }
             });
         };
@@ -60,8 +60,6 @@ class UserDBCalls {
             return new Promise(resolve => {
                 try {
                     const passHash = bcrypt.hashSync(user.password);
-                    console.log(`createUser`);
-                    console.log(user);
                     const result = new user_server_model_1.default({
                         name: user.name,
                         lastname: user.lastname,
@@ -76,7 +74,8 @@ class UserDBCalls {
                         experience: user.experience,
                         gender: user.gender,
                         DoB: user.DoB,
-                        additionalInfo: user.additionalInfo
+                        additionalInfo: user.additionalInfo,
+                        role: user.role
                     });
                     result
                         .save()
@@ -88,37 +87,42 @@ class UserDBCalls {
                     });
                 }
                 catch (error) {
-                    console.log(error);
+                    res.status(500).json({ error });
                 }
             });
         };
         this.updateUser = (user, req, res) => {
             return new Promise(resolve => {
                 try {
-                    const query = { username: user.username };
-                    const result = [
-                        {
-                            name: user.name,
-                            lastname: user.lastname,
-                            username: user.username,
-                            password: user.password,
-                            email: user.email,
-                            status: user.status,
-                            city: user.city,
-                            country: user.country,
-                            locationChange: user.locationChange,
-                            jobType: user.jobType,
-                            experience: user.experience,
-                            gender: user.gender,
-                            DoB: user.DoB,
-                            additionalInfo: user.additionalInfo
-                        }
-                    ];
-                    console.log(`result`);
-                    console.log(result);
+                    const query = { _id: req.params.userId };
+                    const result = {
+                        name: user.name,
+                        lastname: user.lastname,
+                        username: user.username,
+                        password: user.password,
+                        email: user.email,
+                        status: user.status,
+                        city: user.city,
+                        country: user.country,
+                        locationChange: user.locationChange,
+                        jobType: user.jobType,
+                        experience: user.experience,
+                        gender: user.gender,
+                        DoB: user.DoB,
+                        additionalInfo: user.additionalInfo,
+                        role: user.role
+                    };
+                    user_server_model_1.default.findOneAndUpdate(query, { $set: result }, {
+                        upsert: false,
+                        new: true
+                    }, (err, doc) => {
+                        if (err)
+                            throw err;
+                        resolve(doc);
+                    });
                 }
                 catch (error) {
-                    console.log(error);
+                    res.status(500).json({ error });
                 }
             });
         };
@@ -129,7 +133,7 @@ class UserDBCalls {
                     func.authenticatePassword(req_password, user_pass, (err, isMatch) => {
                         if (isMatch && !err) {
                             const token = jwt.encode(authenticate_user_email, config.secret);
-                            const result = ({
+                            const result = {
                                 success: true,
                                 id: authenticate_user_email._id,
                                 name: authenticate_user_email.name,
@@ -146,20 +150,20 @@ class UserDBCalls {
                                 DoB: authenticate_user_email.DoB,
                                 additionalInfo: authenticate_user_email.additionalInfo,
                                 token: 'JWT ' + token
-                            });
+                            };
                             resolve(result);
                             return;
                         }
                         else {
                             res.status(400).send({
-                                message: 'User with that credentials don\'t exist!'
+                                message: "User with that credentials don't exist!"
                             });
                         }
                     });
                 }
                 catch (err) {
                     return res.status(400).send({
-                        'message': func.getErrorMessage(err)
+                        message: func.getErrorMessage(err)
                     });
                 }
             });
