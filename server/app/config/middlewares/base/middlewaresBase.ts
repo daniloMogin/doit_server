@@ -21,7 +21,14 @@ class MiddlewareBase {
     app.use(cors());
     require('./../../strategies/jwt')(passport);
 
-    const MONGO_URI: string = 'mongodb://localhost:27017/doit_db'; 
+    /* --- DB CONNECTION INFO --- */
+    // Local TestDB
+    // const MONGO_URI: string = 'mongodb://localhost:27017/doit_db'; 
+
+    // Heroku LiveDB
+    const MONGO_URI = 'mongodb://doitdb_user:doitdb123@ds259499.mlab.com:59499/doit_db';
+    /* --- END DB INFO --- */
+
     mongoose.connect(MONGO_URI || process.env.MONGODB_URI);
 
     app.use(
