@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = require("mongoose");
-exports.CompanySchema = new mongoose_1.Schema({
+const mongoose = require("mongoose");
+const AutoIncrement = require('mongoose-sequence')(mongoose);
+exports.CompanySchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -31,4 +32,5 @@ exports.CompanySchema = new mongoose_1.Schema({
         required: true
     }
 });
-exports.default = mongoose_1.model('Company', exports.CompanySchema);
+exports.CompanySchema.plugin(AutoIncrement, { inc_field: 'companyId' });
+exports.default = mongoose.model('Company', exports.CompanySchema);

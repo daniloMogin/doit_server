@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = require("mongoose");
-exports.JobSchema = new mongoose_1.Schema({
+const mongoose = require("mongoose");
+const AutoIncrement = require('mongoose-sequence')(mongoose);
+exports.JobSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -20,7 +21,8 @@ exports.JobSchema = new mongoose_1.Schema({
     },
     type: {
         type: String,
-        required: true
+        required: true,
+        enum: ['partTime', 'fullTime']
     },
     keywords: {
         type: String,
@@ -39,4 +41,5 @@ exports.JobSchema = new mongoose_1.Schema({
         required: true
     }
 });
-exports.default = mongoose_1.model('Job', exports.JobSchema);
+exports.JobSchema.plugin(AutoIncrement, { inc_field: 'jobId' });
+exports.default = mongoose.model('Job', exports.JobSchema);
