@@ -28,7 +28,8 @@ export const UserSchema: Schema = new Schema({
     },
     status: {
         type: String,
-        required: true
+        required: true,
+        enum: ['available', 'assigned', 'frozen']
     },
     city: {
         type: String,
