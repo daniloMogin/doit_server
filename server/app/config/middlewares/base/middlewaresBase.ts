@@ -12,59 +12,66 @@ import methodOverride = require('./../methodOverride');
 import baseRoutes = require('./../../../routes/base/base.server.routes');
 
 class MiddlewareBase {
-  static get configuration() {
-    const app = express();
+    static get configuration() {
+        const app = express();
 
-    app.set('views', './views');
-    app.set('view engine', 'pug');
+        const API_URI = '/API';
 
-    app.use(cors());
-    require('./../../strategies/jwt')(passport);
+        app.set('views', './views');
+        app.set('view engine', 'pug');
 
-    /* --- DB CONNECTION INFO --- */
-    // Local TestDB
-    // const MONGO_URI: string = 'mongodb://localhost:27017/doit_db'; 
+        app.use(cors());
+        require('./../../strategies/jwt')(passport);
 
-    // Heroku LiveDB
-    const MONGO_URI = 'mongodb://doitdb_user:doitdb123@ds259499.mlab.com:59499/doit_db';
-    /* --- END DB INFO --- */
+        /* --- DB CONNECTION INFO --- */
+        // Local TestDB
+        // const MONGO_URI: string = 'mongodb://localhost:27017/doit_db'; 
 
-    mongoose.connect(MONGO_URI || process.env.MONGODB_URI);
+        // Heroku LiveDB
+        const MONGO_URI = 'mongodb://doitdb_user:doitdb123@ds259499.mlab.com:59499/doit_db';
+        /* --- END DB INFO --- */
 
-    app.use(
-      bodyParser.urlencoded({
-        extended: true
-      })
-    );
-    app.use(bodyParser.json());
-    app.use(methodOverride.configuration());
-    app.use(morgan('dev'));
+        mongoose.connect(MONGO_URI || process.env.MONGODB_URI);
 
-    app.use(flash());
-    app.use(passport.initialize());
-    app.use(passport.session());
+        app.use(
+            bodyParser.urlencoded({
+                extended: true
+            })
+        );
+        app.use(bodyParser.json());
+        app.use(methodOverride.configuration());
+        app.use(morgan('dev'));
 
-    app.use('/api', new baseRoutes().routes);
+        app.use(flash());
+        app.use(passport.initialize());
+        app.use(passport.session());
 
-    app.use(express.static('./public'));
+        app.use(API_URI, new baseRoutes().routes);
 
-    // catch 404 and forward to error handler
-    app.use((req: express.Request, res: express.Response, next) => {
-      res.status(404);
-      res.render('404.pug', { title: '404: File not found' });
-    });
+        app.use(express.static('./public'));
 
-    // error handler
-    app.use((err, req: express.Request, res: express.Response, next) => {
-      res.status(err.status || 500);
-      res.render('error', {
-        message: err.message,
-        error: app.get('env') === 'development' ? err : {}
-      });
-    });
+        // The "/"(Root) Route is unused, Redirecting to /API where the rest of the routes are
+        app.use('/', (req: express.Request, res: express.Response) => {
+            res.redirect(API_URI)
+        });
 
-    return app;
-  }
+        // catch 404 and forward to error handler
+        app.use((req: express.Request, res: express.Response, next) => {
+            res.status(404);
+            res.render('404.pug', { title: '404: File not found' });
+        });
+
+        // error handler
+        app.use((err, req: express.Request, res: express.Response, next) => {
+            res.status(err.status || 500);
+            res.render('error', {
+                message: err.message,
+                error: app.get('env') === 'development' ? err : {}
+            });
+        });
+
+        return app;
+    }
 }
 
 Object.seal(MiddlewareBase);

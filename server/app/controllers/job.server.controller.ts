@@ -20,7 +20,10 @@ export default class JobController {
                 });
             }
         } catch (err) {
-            console.error('Unable to fetch Jobs database, Error: ', err);
+            console.error(
+                'Unable to fetch Jobs database, Error: ',
+                err
+            );
         }
     }
 
@@ -74,7 +77,10 @@ export default class JobController {
                 });
             }
         } catch (err) {
-            console.error('Unable to fetch Jobs database, Error: ', err);
+            console.error(
+                'Unable to fetch Jobs database, Error: ',
+                err
+            );
         }
     }
 
@@ -168,7 +174,6 @@ export default class JobController {
 
     public async updateJob(req: Request, res: Response) {
         const job = {
-            jobId: req.body.id,
             name: req.body.name,
             description: req.body.description,
             city: req.body.city,
@@ -201,11 +206,8 @@ export default class JobController {
     }
 
     public async deleteJob(req: Request, res: Response) {
-        const job = {
-            jobId: req.body.id
-        };
         try {
-            const deleteJob = await job_db.deleteJob(job, req, res);
+            const deleteJob = await job_db.deleteJob(req, res);
             console.log(deleteJob);
             if (deleteJob !== null) {
                 res.status(200).json({

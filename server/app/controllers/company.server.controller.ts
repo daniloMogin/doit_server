@@ -6,15 +6,15 @@ import { ICompany } from '../models/interfaces/company.server.interface';
 const company_db = new CompanyDBCalls();
 
 export default class CompanyController {
-    renderCompany = (req: Request, res: Response) => {
-        console.log('=================================================');
-        console.log('Rendering company... (company.server.controller.ts 34)');
-        console.log('=================================================');
-        res.render('company', {
-            title: 'Be a SMART Company',
-            user: JSON.stringify(req.user)
-        });
-    };
+    // renderCompany = (req: Request, res: Response) => {
+    //     console.log('=================================================');
+    //     console.log('Rendering company... (company.server.controller.ts 34)');
+    //     console.log('=================================================');
+    //     res.render('company', {
+    //         title: 'Be a SMART Company',
+    //         user: JSON.stringify(req.user)
+    //     });
+    // };
     public async getCompanies(req: Request, res: Response) {
         try {
             const findCompany: any = await company_db.findCompany(req, res);
@@ -89,7 +89,6 @@ export default class CompanyController {
 
     public async updateCompany(req: Request, res: Response) {
         const company = {
-            companyId: req.body.id,
             name: req.body.name,
             description: req.body.description,
             city: req.body.city,
@@ -124,12 +123,8 @@ export default class CompanyController {
     }
 
     public async deleteCompany(req: Request, res: Response) {
-        const company = {
-            companyId: req.body.id
-        };
         try {
             const deleteCompany = await company_db.deleteCompany(
-                company,
                 req,
                 res
             );
@@ -143,6 +138,22 @@ export default class CompanyController {
                 res.status(500).json({
                     error: deleteCompany
                 });
+            }
+        } catch (err) {
+            console.error(
+                'Unable to connect to db and fetch all companies. Error is ',
+                err
+            );
+        }
+    }
+
+    public async getCompanyByName(req: Request, res: Response) {
+        try {
+            const findCompany: any = await company_db.findCompanyByName(req, res)
+            if (findCompany.length > 0) {
+                res.status(200).json({ findCompany });
+            } else {
+                res.status(500).json({ error: findCompany });
             }
         } catch (err) {
             console.error(

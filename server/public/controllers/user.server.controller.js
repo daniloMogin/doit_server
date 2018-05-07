@@ -27,7 +27,7 @@ class UserController {
                 title: 'Be SMART DOIT'
             });
         };
-        this.renderUsers = (passport.authenticate('jwt', { session: false }),
+        this.renderUsers = ((passport.authenticate('jwt', { session: false })),
             (req, res) => __awaiter(this, void 0, void 0, function* () {
                 console.log('=================================================');
                 console.log('Rendering user... (user.server.controller.ts 34)');

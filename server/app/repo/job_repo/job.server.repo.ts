@@ -6,7 +6,7 @@ export default class JobDBCalls {
     public findJob(req: Request, res: Response) {
         return new Promise(resolve => {
             try {
-                JobModel.find({}, '-_id')
+                JobModel.find()
                     .then(data => {
                         resolve(data);
                     })
@@ -22,7 +22,7 @@ export default class JobDBCalls {
     public findJobById(req: Request, res: Response) {
         return new Promise(resolve => {
             try {
-                JobModel.findOne({ jobId: req.body.id }, '-_id')
+                JobModel.findById(req.params.id)
                     .then(data => {
                         resolve(data);
                     })
@@ -38,7 +38,7 @@ export default class JobDBCalls {
     public findJobByName(req: Request, res: Response) {
         return new Promise(resolve => {
             try {
-                JobModel.find({ name: req.body.name }, '-_id')
+                JobModel.find({ name: req.params.name })
                     .then(data => {
                         resolve(data);
                     })
@@ -54,7 +54,7 @@ export default class JobDBCalls {
     public findJobByCity(req: Request, res: Response) {
         return new Promise(resolve => {
             try {
-                JobModel.find({ city: req.body.city }, '-_id')
+                JobModel.find({ city: req.params.city })
                     .then(data => {
                         resolve(data);
                     })
@@ -70,7 +70,7 @@ export default class JobDBCalls {
     public findJobByCountry(req: Request, res: Response) {
         return new Promise(resolve => {
             try {
-                JobModel.find({ country: req.body.country }, '-_id')
+                JobModel.find({ country: req.params.country })
                     .then(data => {
                         resolve(data);
                     })
@@ -86,7 +86,7 @@ export default class JobDBCalls {
     public findJobByKeyword(req: Request, res: Response) {
         return new Promise(resolve => {
             try {
-                JobModel.find({ keyword: req.body.keyword }, '-_id')
+                JobModel.find({ keyword: req.params.keyword })
                     .then(data => {
                         resolve(data);
                     })
@@ -102,7 +102,7 @@ export default class JobDBCalls {
     public findJobByType(req: Request, res: Response) {
         return new Promise(resolve => {
             try {
-                JobModel.find({ type: req.body.type }, '-_id')
+                JobModel.find({ type: req.params.type })
                     .then(data => {
                         resolve(data);
                     })
@@ -147,8 +147,7 @@ export default class JobDBCalls {
     public updateJob(job, req: Request, res: Response) {
         return new Promise(resolve => {
             try {
-                const query = { jobId: job.jobId };
-                const result = new JobModel({
+                const result = {
                     name: job.name,
                     description: job.description,
                     city: job.city,
@@ -158,9 +157,9 @@ export default class JobDBCalls {
                     categories: job.categories,
                     experience: job.experience,
                     salary: job.salary
-                });
+                };
 
-                JobModel.findOneAndUpdate(query, result)
+                JobModel.findByIdAndUpdate(req.params.id, result)
                     .then(data => {
                         resolve(data);
                     })
@@ -173,12 +172,10 @@ export default class JobDBCalls {
         });
     }
 
-    public deleteJob(job, req: Request, res: Response) {
+    public deleteJob(req: Request, res: Response) {
         return new Promise(resolve => {
             try {
-                const query = { jobId: job.jobId };
-
-                JobModel.findOneAndRemove(query)
+                JobModel.findByIdAndRemove(req.params.id)
                     .then(data => {
                         resolve(data);
                     })

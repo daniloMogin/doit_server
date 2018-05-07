@@ -6,7 +6,7 @@ export default class CompanyDBCalls {
     public findCompany = (req: Request, res: Response) => {
         return new Promise(resolve => {
             try {
-                CompanyModel.find({}, '-_id')
+                CompanyModel.find()
                     .then(data => {
                         resolve(data);
                     })
@@ -21,8 +21,7 @@ export default class CompanyDBCalls {
     public findCompanyById = (req: Request, res: Response) => {
         return new Promise(resolve => {
             try {
-                const query = { companyId: req.params.id };
-                CompanyModel.findOne(query, '-_id')
+                CompanyModel.findById(req.params.id)
                     .then(data => {
                         resolve(data);
                     })
@@ -63,8 +62,7 @@ export default class CompanyDBCalls {
     public updateCompany = (company, req: Request, res: Response) => {
         return new Promise(resolve => {
             try {
-                const query = { companyId: company.companyId };
-                const result = new CompanyModel({
+                const result = {
                     name: company.name,
                     description: company.description,
                     city: company.city,
@@ -72,9 +70,9 @@ export default class CompanyDBCalls {
                     phone: company.phone,
                     email: company.email,
                     website: company.website
-                });
+                };
 
-                CompanyModel.findOneAndUpdate(query, result)
+                CompanyModel.findByIdAndUpdate(req.params.id, result)
                     .then(data => {
                         resolve(data);
                     })
@@ -86,12 +84,10 @@ export default class CompanyDBCalls {
             }
         });
     };
-    public deleteCompany = (company, req: Request, res: Response) => {
+    public deleteCompany = (req: Request, res: Response) => {
         return new Promise(resolve => {
             try {
-                const query = { companyId: company.companyId };
-
-                CompanyModel.findOneAndRemove(query)
+                CompanyModel.findByIdAndRemove(req.params.id)
                     .then(data => {
                         resolve(data);
                     })
@@ -103,4 +99,20 @@ export default class CompanyDBCalls {
             }
         });
     };
+
+    public findCompanyByName = (req: Request, res: Response) => {
+        return new Promise(resolve => {
+            try {
+                CompanyModel.find({ name: req.params.name })
+                    .then(data => {
+                        resolve(data);
+                    })
+                    .catch(error => {
+                        resolve(error);
+                    });
+            } catch (err) {
+                console.error(err);
+            }
+        })
+    }
 }

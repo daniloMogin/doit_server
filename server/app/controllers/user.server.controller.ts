@@ -16,7 +16,7 @@ const role_db = new RoleDBCalls();
 const func = new Functions();
 
 class UserController {
-    renderRegister = (req: Request, res: Response) => {
+    public renderRegister = (req: Request, res: Response) => {
         console.log('=================================================');
         console.log('Rendering register... (register.server.controller.ts 34)');
         console.log('=================================================');
@@ -25,7 +25,7 @@ class UserController {
         });
     };
 
-    renderUsers = (passport.authenticate('jwt', { session: false }),
+    public renderUsers = ((passport.authenticate('jwt', { session: false })),
     async (req: Request, res: Response) => {
         console.log('=================================================');
         console.log('Rendering user... (user.server.controller.ts 34)');

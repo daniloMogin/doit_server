@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose';
 import { ICompany } from './interfaces/company.server.interface';
-const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 export const CompanySchema: mongoose.Schema = new mongoose.Schema({
     name: {
@@ -32,6 +31,5 @@ export const CompanySchema: mongoose.Schema = new mongoose.Schema({
         required: true
     }
 });
-CompanySchema.plugin(AutoIncrement, { inc_field: 'companyId' });
 
 export default mongoose.model<ICompany>('Company', CompanySchema);

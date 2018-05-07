@@ -1,7 +1,7 @@
 import * as express from 'express';
 import CompanyController from './../controllers/company.server.controller';
 
-const API_URI_ROOT = '/Company/';
+const API_URI_ROOT = '/Companies/';
 const router = express.Router();
 
 class CompanyRoutes {
@@ -9,12 +9,13 @@ class CompanyRoutes {
 
     get routes(): express.Router {
         const controller = this._companyController;
-        router.get(`${API_URI_ROOT}`, controller.renderCompany);
-        router.get(`${API_URI_ROOT}GetCompanies`, controller.getCompanies);
-        router.get(`${API_URI_ROOT}GetCompanyById/:companyId`, controller.getCompanyById);
-        router.post(`${API_URI_ROOT}Create`, controller.createCompany);
-        router.put(`${API_URI_ROOT}Edit`, controller.updateCompany);
-        router.delete(`${API_URI_ROOT}Delete`, controller.deleteCompany);
+        // router.get(`${API_URI_ROOT}`, controller.renderCompany);
+        router.get(`${API_URI_ROOT}`, controller.getCompanies);
+        router.get(`${API_URI_ROOT}:id`, controller.getCompanyById);
+        router.post(`${API_URI_ROOT}`, controller.createCompany);
+        router.put(`${API_URI_ROOT}:id`, controller.updateCompany);
+        router.delete(`${API_URI_ROOT}:id`, controller.deleteCompany);
+        router.get(`${API_URI_ROOT}byName/:name`, controller.getCompanyByName);
 
         return router;
     }
