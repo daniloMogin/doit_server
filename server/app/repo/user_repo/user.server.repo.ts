@@ -28,7 +28,7 @@ class UserDBCalls {
     public findUserById = (req: Request, res: Response) => {
         return new Promise(resolve => {
             try {
-                UserModel.findOne({ _id: req.params.userId })
+                UserModel.findOne({ _id: req.params.userId }, '-password')
                     .then(data => {
                         resolve(data);
                     })

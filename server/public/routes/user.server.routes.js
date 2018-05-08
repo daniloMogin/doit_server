@@ -17,9 +17,9 @@ class UserRoutes {
         router.get(`${API_URI_ROOT}GetUsersByRole`, controller.getUserByRole);
         router.post(`${API_URI_ROOT}Create`, controller.createUser);
         router.put(`${API_URI_ROOT}Update/:userId`, controller.updateUser);
-        router.post(`${API_URI_ROOT}Login`, controller.authenticate);
-        router.get(`${API_URI_ROOT}Register`, controller.renderRegister);
-        router.post(`${API_URI_ROOT}Register`, controller.register);
+        router.post(`${AUTH_URI_ROOT}Login`, controller.authenticate);
+        router.get(`${AUTH_URI_ROOT}Register`, controller.renderRegister);
+        router.post(`${AUTH_URI_ROOT}Register`, controller.register);
         return router;
     }
 }

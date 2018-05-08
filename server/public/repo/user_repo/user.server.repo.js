@@ -27,7 +27,7 @@ class UserDBCalls {
         this.findUserById = (req, res) => {
             return new Promise(resolve => {
                 try {
-                    user_server_model_1.default.findOne({ _id: req.params.userId })
+                    user_server_model_1.default.findOne({ _id: req.params.userId }, '-password')
                         .then(data => {
                         resolve(data);
                     })

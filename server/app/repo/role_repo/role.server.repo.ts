@@ -87,7 +87,6 @@ class RoleDBCalls {
                     query,
                     { $set: result },
                     {
-                        upsert: true,
                         new: true
                     },
                     (err, doc) => {
