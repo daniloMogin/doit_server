@@ -45,7 +45,8 @@ export const UserSchema: Schema = new Schema({
         default: false
     },
     jobType: {
-        type: String
+        type: String,
+        enum: ['fullTime', 'partTime']
     },
     experience: {
         type: String,
@@ -53,7 +54,8 @@ export const UserSchema: Schema = new Schema({
     },
     gender: {
         type: String,
-        required: true
+        required: true,
+        enum: ['male', 'female']
     },
     DoB: {
         type: String,

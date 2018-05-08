@@ -43,7 +43,8 @@ exports.UserSchema = new mongoose_1.Schema({
         default: false
     },
     jobType: {
-        type: String
+        type: String,
+        enum: ['fullTime', 'partTime']
     },
     experience: {
         type: String,
@@ -51,7 +52,8 @@ exports.UserSchema = new mongoose_1.Schema({
     },
     gender: {
         type: String,
-        required: true
+        required: true,
+        enum: ['male', 'female']
     },
     DoB: {
         type: String,

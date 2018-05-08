@@ -16,14 +16,14 @@ class UserRoutes {
     get routes(): express.Router {
         let controller = this._userController;
 
-        router.get(`/User/GetUsers`, controller.renderUsers);
-        router.get(`${API_URI_ROOT}GetUsers`, controller.getUsers);
-        router.get(`${API_URI_ROOT}GetUserById/:userId`, controller.getUserById);
-        router.get(`${API_URI_ROOT}GetUsersByCompany`, controller.getUserByCompany);
-        router.get(`${API_URI_ROOT}GetUsersByRole`, controller.getUserByRole);
+        router.post(`${API_URI_ROOT}`, controller.createUser);
+        router.get(`${API_URI_ROOT}`, controller.getUsers);
+        router.put(`${API_URI_ROOT}:userId`, controller.updateUser);
+        router.get(`${API_URI_ROOT}:userId`, controller.getUserById);
+        // router.get(`${API_URI_ROOT}byCompany/:company`, controller.getUserByCompany);
+        // router.get(`${API_URI_ROOT}byRole/:role`, controller.getUserByRole);
+        router.get(`${API_URI_ROOT}render`, controller.renderUsers);
 
-        router.post(`${API_URI_ROOT}Create`, controller.createUser);
-        router.put(`${API_URI_ROOT}Update/:userId`, controller.updateUser);
 
         router.post(`${AUTH_URI_ROOT}Login`, controller.authenticate);
         router.get(`${AUTH_URI_ROOT}Register`, controller.renderRegister);
