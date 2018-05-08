@@ -39,7 +39,7 @@ class Functions {
         }
     };
 
-    public decodeToken = (token, secret): string => {
+    public decodeToken = (token): string => {
         const decode = jwt.decode(token, config.secret);
         return decode;
     };

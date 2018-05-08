@@ -29,9 +29,6 @@ class MiddlewareBase {
         app.use(passport.session());
         app.use(API_URI, new baseRoutes().routes);
         app.use(express.static('./public'));
-        app.use('/', (req, res) => {
-            res.redirect(API_URI);
-        });
         app.use((req, res, next) => {
             res.status(404);
             res.render('404.pug', { title: '404: File not found' });

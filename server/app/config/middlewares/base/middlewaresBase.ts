@@ -51,9 +51,9 @@ class MiddlewareBase {
         app.use(express.static('./public'));
 
         // The "/"(Root) Route is unused, Redirecting to /API where the rest of the routes are
-        app.use('/', (req: express.Request, res: express.Response) => {
-            res.redirect(API_URI)
-        });
+        // app.use('/', (req: express.Request, res: express.Response) => {
+        //     res.redirect(API_URI)
+        // });
 
         // catch 404 and forward to error handler
         app.use((req: express.Request, res: express.Response, next) => {

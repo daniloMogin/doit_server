@@ -47,7 +47,7 @@ class UserController {
             (req, res) => __awaiter(this, void 0, void 0, function* () {
                 const token = func.getToken(req.headers);
                 if (token) {
-                    const tempUsername = func.decodeToken(token, config.secret);
+                    const tempUser = func.decodeToken(token);
                     try {
                         const findUser = yield user_db.findUser();
                         if (findUser.length > 0) {
@@ -304,9 +304,14 @@ class UserController {
     authenticate(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log(`OVDE SAM`);
                 const validate_login = yield func.validateLogin(req.body.username, req.body.password, res);
+                console.log(`validate_login`);
+                console.log(validate_login);
                 if (_.isNil(validate_login.error)) {
                     const authenticate_user_email = yield user_db.findUserByUsername(validate_login.username);
+                    console.log(`authenticate_user_email`);
+                    console.log(authenticate_user_email);
                     if (!_.isNil(authenticate_user_email)) {
                         const authenticate_user_password = yield user_db.authenticateUserPassword(authenticate_user_email, req.body.password, res);
                         res.status(201).json({ authenticate_user_password });

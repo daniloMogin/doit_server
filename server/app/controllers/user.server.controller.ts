@@ -45,7 +45,7 @@ class UserController {
     async (req: Request, res: Response) => {
         const token: string = func.getToken(req.headers);
         if (token) {
-            const tempUsername: string = func.decodeToken(token, config.secret);
+            const tempUser: string = func.decodeToken(token);
             try {
                 const findUser = await user_db.findUser();
                 if (findUser.length > 0) {
@@ -299,15 +299,22 @@ class UserController {
 
     public async authenticate(req: Request, res: Response) {
         try {
+            console.log(`OVDE SAM`);
+            
             const validate_login = await func.validateLogin(
                 req.body.username,
                 req.body.password,
                 res
             );
+            console.log(`validate_login`);
+            console.log(validate_login);
+            
             if (_.isNil(validate_login.error)) {
                 const authenticate_user_email = await user_db.findUserByUsername(
                     validate_login.username
                 );
+                console.log(`authenticate_user_email`);
+                console.log(authenticate_user_email);
                 if (!_.isNil(authenticate_user_email)) {
                     const authenticate_user_password = await user_db.authenticateUserPassword(
                         authenticate_user_email,
@@ -331,7 +338,7 @@ class UserController {
             const findUserByUsername = await user_db.findUserByUsername(
                 req.body.username,
                 res
-            );
+            );            
             if (findUserByUsername != null) {
                 res
                     .status(403)
@@ -381,11 +388,11 @@ class UserController {
                 const validate_register = await func.validateRegister(
                     ...user,
                     res
-                );
+                );                
                 if (_.isNil(validate_register.error)) {
                     const createUser = await user_db.createUser(
                         validate_register
-                    );
+                    );                    
                     if (createUser.errmsg === undefined) {
                         res.status(200).json({ createUser });
                     } else {

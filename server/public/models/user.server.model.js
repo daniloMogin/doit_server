@@ -26,7 +26,8 @@ exports.UserSchema = new mongoose_1.Schema({
     },
     status: {
         type: String,
-        required: true
+        required: true,
+        enum: ['available', 'assigned', 'frozen']
     },
     city: {
         type: String,

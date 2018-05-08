@@ -19,10 +19,6 @@ class RoleController {
         const token: string = func.getToken(req.headers);
         if (token) {
             try {
-                const tempEmail: string = func.decodeToken(
-                    token,
-                    config.secret
-                );
                 const findRole = await role_db.findRole();
                 if (findRole.length > 0) {
                     res.status(200).json({ findRole });
@@ -69,7 +65,7 @@ class RoleController {
         ];
 
         try {
-            const findRole = await role_db.findRoleByName(req);
+            const findRole = await role_db.findRoleByName(name);
             if (_.isNil(findRole)) {
                 const createRole = await role_db.createRole(...role);
                 res.status(201).json({ createRole });
