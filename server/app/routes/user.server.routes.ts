@@ -22,12 +22,14 @@ class UserRoutes {
         router.get(`${API_URI_ROOT}:userId`, controller.getUserById);
         // router.get(`${API_URI_ROOT}byCompany/:company`, controller.getUserByCompany);
         // router.get(`${API_URI_ROOT}byRole/:role`, controller.getUserByRole);
-        router.get(`${API_URI_ROOT}render`, controller.renderUsers);
+
+        // router.get(`${API_URI_ROOT}render`, controller.renderUsers);
 
 
         router.post(`${AUTH_URI_ROOT}Login`, controller.authenticate);
         router.get(`${AUTH_URI_ROOT}Register`, controller.renderRegister);
         router.post(`${AUTH_URI_ROOT}Register`, controller.register);
+        router.get(`${AUTH_URI_ROOT}Current`, controller.getLoggedInUser);
 
         return router;
     }

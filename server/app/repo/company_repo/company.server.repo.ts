@@ -72,7 +72,9 @@ export default class CompanyDBCalls {
                     website: company.website
                 };
 
-                CompanyModel.findByIdAndUpdate(req.params.id, result)
+                CompanyModel.findByIdAndUpdate(req.params.id, result, {
+                    new: true
+                })
                     .then(data => {
                         resolve(data);
                     })

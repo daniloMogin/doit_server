@@ -20,9 +20,9 @@ export default class CompanyController {
             const findCompany: any = await company_db.findCompany(req, res);
 
             if (findCompany.length > 0) {
-                res.status(200).json({ findCompany });
+                res.status(200).json({ success: true, company: findCompany });
             } else {
-                res.status(500).json({ error: findCompany });
+                res.status(500).json({ success: false, msg: findCompany });
             }
         } catch (err) {
             console.error(
@@ -39,9 +39,9 @@ export default class CompanyController {
                 res
             );
             if (findCompanyById != null) {
-                res.status(200).json({ findCompanyById });
+                res.status(200).json({ success: true, company: findCompanyById });
             } else {
-                res.status(500).json({ error: findCompanyById });
+                res.status(500).json({ success: false, msg: findCompanyById });
             }
         } catch (err) {
             console.error(
@@ -73,11 +73,10 @@ export default class CompanyController {
             );
             if (createCompany.errors === undefined) {
                 res.status(200).json({
-                    message: 'Company Created Successufully!',
-                    createInfo: createCompany
+                    success: true, msg: createCompany
                 });
             } else {
-                res.status(500).json({ createCompany });
+                res.status(500).json({ success: false, msg: createCompany });
             }
         } catch (err) {
             console.error(
@@ -106,12 +105,11 @@ export default class CompanyController {
             console.log(updateCompany);
             if (updateCompany !== null) {
                 res.status(200).json({
-                    message: 'Successfully Updated Company Info',
-                    updateInfo: updateCompany
+                    success: true, company: updateCompany
                 });
             } else {
                 res.status(500).json({
-                    error: updateCompany
+                    success: false, msg: updateCompany
                 });
             }
         } catch (err) {
@@ -128,15 +126,13 @@ export default class CompanyController {
                 req,
                 res
             );
-            console.log(deleteCompany);
             if (deleteCompany !== null) {
                 res.status(200).json({
-                    message: 'Successfully Delete Company',
-                    deleteInfo: deleteCompany
+                    success: true, company: deleteCompany
                 });
             } else {
                 res.status(500).json({
-                    error: deleteCompany
+                    success: false, msg: deleteCompany
                 });
             }
         } catch (err) {
@@ -151,9 +147,9 @@ export default class CompanyController {
         try {
             const findCompany: any = await company_db.findCompanyByName(req, res)
             if (findCompany.length > 0) {
-                res.status(200).json({ findCompany });
+                res.status(200).json({ success: true, company: findCompany });
             } else {
-                res.status(500).json({ error: findCompany });
+                res.status(500).json({ success: false, msg: findCompany });
             }
         } catch (err) {
             console.error(

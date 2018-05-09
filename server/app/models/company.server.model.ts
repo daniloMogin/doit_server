@@ -24,12 +24,15 @@ export const CompanySchema: mongoose.Schema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        lowercase: true,
+        required: [true, "Field is required"],
+        match: [/\S+@\S+\.\S+/, 'is invalid'],
+        index: true
     },
     website: {
         type: String,
         required: true
     }
-});
+}, { timestamps: true });
 
 export default mongoose.model<ICompany>('Company', CompanySchema);

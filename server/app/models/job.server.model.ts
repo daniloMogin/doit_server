@@ -38,7 +38,17 @@ export const JobSchema: mongoose.Schema = new mongoose.Schema({
     salary: {
         type: String,
         required: true
+    },
+    active: {
+        type: String,
+        enum: ['active', 'expired', 'disabled'],
+        default: 'active'
+    },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
-});
+}, { timestamps: true });
 
 export default mongoose.model<IJob>('Job', JobSchema);

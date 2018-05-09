@@ -14,22 +14,30 @@ export const UserSchema: Schema = new Schema({
     },
     username: {
         type: String,
-        required: true,
+        lowercase: true,
+        required: [true, "Field is required"],
+        match: [/^[a-zA-Z0-9]+$/, 'is invalid'],
+        index: true,
         unique: true
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        min: [3, 'Minimum 3 Characters Long']
     },
     email: {
         type: String,
-        required: true,
+        lowercase: true,
+        required: [true, "Field is required"],
+        match: [/\S+@\S+\.\S+/, 'is invalid'],
+        index: true,
         unique: true
     },
     status: {
         type: String,
         required: true,
-        enum: ['available', 'assigned', 'frozen']
+        enum: ['available', 'assigned', 'frozen'],
+        default: 'available'
     },
     city: {
         type: String,
@@ -46,7 +54,8 @@ export const UserSchema: Schema = new Schema({
     },
     jobType: {
         type: String,
-        enum: ['fullTime', 'partTime']
+        enum: ['fullTime', 'partTime'],
+        default: 'fullTime'
     },
     experience: {
         type: String,
@@ -59,31 +68,26 @@ export const UserSchema: Schema = new Schema({
     },
     DoB: {
         type: String,
-        required: true
+        required: true,
     },
     additionalInfo: {
         type: String
     },
-    role: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Role',
-            required: true
-        }
-    ],
-    company: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Company'
-        }
-    ],
+    role: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Role',
+        required: true
+    }],
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company'
+    },
     job: [
         {
             type: Schema.Types.ObjectId,
             ref: 'Job'
         }
     ]
-});
+}, { timestamps: true });
 
-// const User = mongoose.model<IUser>('User', UserSchema);
 export default model<IUser>('User', UserSchema);

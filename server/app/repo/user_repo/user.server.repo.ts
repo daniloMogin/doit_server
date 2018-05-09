@@ -28,12 +28,11 @@ class UserDBCalls {
     public findUserById = (req: Request, res: Response) => {
         return new Promise(resolve => {
             try {
-                UserModel.findOne({ _id: req.params.userId }, '-password')
-                    .then(data => {
-                        resolve(data);
-                    })
-                    .catch(error => {
-                        resolve(error);
+                UserModel.findById(req.params.userId, '-password')
+                    .populate('role')
+                    .exec((err, user) => {
+                        if (err) throw err;
+                        resolve(user);
                     });
             } catch (error) {
                 res.status(500).json({ error });
@@ -95,12 +94,12 @@ class UserDBCalls {
     public updateUser = (user, req: Request, res: Response) => {
         return new Promise(resolve => {
             try {
-                const query = { _id: req.params.userId };
+                const passHash: string = bcrypt.hashSync(user.password);
                 const result = {
                     name: user.name,
                     lastname: user.lastname,
                     username: user.username,
-                    password: user.password,
+                    password: passHash,
                     email: user.email,
                     status: user.status,
                     city: user.city,
@@ -113,10 +112,11 @@ class UserDBCalls {
                     additionalInfo: user.additionalInfo,
                     role: user.role
                 };
-                UserModel.findOneAndUpdate(
-                    query,
+                UserModel.findByIdAndUpdate(
+                    req.params.userId,
                     { $set: result },
                     {
+                        select: '-password',
                         upsert: false,
                         new: true
                     },
@@ -143,6 +143,8 @@ class UserDBCalls {
                     req_password,
                     user_pass,
                     (err: Error, isMatch: string | number) => {
+                        console.log(isMatch);
+                        console.log(err);
                         if (isMatch && !err) {
                             const token = jwt.encode(
                                 authenticate_user_email,

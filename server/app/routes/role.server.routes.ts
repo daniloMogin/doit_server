@@ -2,7 +2,7 @@ import * as express from 'express';
 
 import RoleController = require('./../controllers/role.server.controller');
 
-const API_URI_ROOT = '/Role/';
+const API_URI_ROOT = '/Roles/';
 const router = express.Router();
 
 class RoleRoutes {
@@ -15,11 +15,10 @@ class RoleRoutes {
   get routes(): express.Router {
     let controller = this._roleController;
 
+    router.post(`${API_URI_ROOT}`, controller.createRole);
     router.get(`${API_URI_ROOT}`, controller.getRole);
     router.get(`${API_URI_ROOT}:roleId`, controller.getRolebyId);
-
     router.put(`${API_URI_ROOT}:roleId`, controller.updateRole);
-    router.post(`${API_URI_ROOT}`, controller.createRole);
 
     return router;
   }
