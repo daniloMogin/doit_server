@@ -7,6 +7,7 @@ export default class JobDBCalls {
         return new Promise(resolve => {
             try {
                 JobModel.find()
+                    .populate('createdBy', '-password -__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -23,6 +24,7 @@ export default class JobDBCalls {
         return new Promise(resolve => {
             try {
                 JobModel.findById(req.params.id)
+                    .populate('createdBy', '-password -__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -39,6 +41,7 @@ export default class JobDBCalls {
         return new Promise(resolve => {
             try {
                 JobModel.find({ name: req.params.name })
+                    .populate('createdBy', '-password -__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -55,6 +58,7 @@ export default class JobDBCalls {
         return new Promise(resolve => {
             try {
                 JobModel.find({ city: req.params.city })
+                    .populate('createdBy', '-password -__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -71,6 +75,7 @@ export default class JobDBCalls {
         return new Promise(resolve => {
             try {
                 JobModel.find({ country: req.params.country })
+                    .populate('createdBy', '-password -__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -87,6 +92,7 @@ export default class JobDBCalls {
         return new Promise(resolve => {
             try {
                 JobModel.find({ keyword: req.params.keyword })
+                    .populate('createdBy', '-password -__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -103,6 +109,7 @@ export default class JobDBCalls {
         return new Promise(resolve => {
             try {
                 JobModel.find({ type: req.params.type })
+                    .populate('createdBy', '-password -__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -127,7 +134,9 @@ export default class JobDBCalls {
                     keywords: job.keywords,
                     categories: job.categories,
                     experience: job.experience,
-                    salary: job.salary
+                    salary: job.salary,
+                    active: job.active,
+                    createdBy: job.createdBy
                 });
 
                 result
@@ -156,7 +165,11 @@ export default class JobDBCalls {
                     keywords: job.keywords,
                     categories: job.categories,
                     experience: job.experience,
-                    salary: job.salary
+                    salary: job.salary,
+                    active: job.active
+                    // Not modifying created by ID,
+                    // Maybe add another field to monitor this?
+                    // createdBy: job.createdBy
                 };
 
                 JobModel.findByIdAndUpdate(req.params.id, result)

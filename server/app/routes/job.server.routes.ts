@@ -9,7 +9,8 @@ class JobRoutes {
 
     get routes(): express.Router {
         const controller = this._jobController;
-        // router.get(`${API_URI_ROOT}`, controller.renderCompany);
+
+        router.post(`${API_URI_ROOT}`, controller.createJob);
         router.get(`${API_URI_ROOT}`, controller.getJobs);
         router.get(`${API_URI_ROOT}:id`, controller.getJobById);
         router.get(`${API_URI_ROOT}byName/:name`, controller.getJobsByName);
@@ -17,7 +18,6 @@ class JobRoutes {
         router.get(`${API_URI_ROOT}byCountry/:country`, controller.getJobsByCountry);
         router.get(`${API_URI_ROOT}byKeyword/:keyword`, controller.getJobsByKeyword);
         router.get(`${API_URI_ROOT}byType/:type`, controller.getJobsByType);
-        router.post(`${API_URI_ROOT}`, controller.createJob);
         router.put(`${API_URI_ROOT}:id`,controller.updateJob);
         router.delete(`${API_URI_ROOT}:id`, controller.deleteJob);
 

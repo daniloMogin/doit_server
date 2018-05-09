@@ -27,9 +27,9 @@ class UserRoutes {
 
 
         router.post(`${AUTH_URI_ROOT}Login`, controller.authenticate);
-        router.get(`${AUTH_URI_ROOT}Register`, controller.renderRegister);
         router.post(`${AUTH_URI_ROOT}Register`, controller.register);
-        router.get(`${AUTH_URI_ROOT}Current`, controller.getLoggedInUser);
+        router.get(`${AUTH_URI_ROOT}Login`, controller.getLoggedInUser);
+        router.get(`${AUTH_URI_ROOT}Register`, controller.renderRegister);
 
         return router;
     }

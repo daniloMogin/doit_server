@@ -10,4 +10,5 @@ export interface IJob extends mongoose.Document {
     categories: string;
     experience: string;
     salary: string;
+    active: string;
 }
