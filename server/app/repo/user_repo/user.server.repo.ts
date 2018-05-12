@@ -28,7 +28,7 @@ class UserDBCalls {
     public findUserById = (req: Request, res: Response) => {
         return new Promise(resolve => {
             try {
-                UserModel.findById(req.params.userId, '-password')
+                UserModel.findById(req.params.userId, '-password -__v')
                     .populate('role')
                     .exec((err, user) => {
                         if (err) throw err;
@@ -55,6 +55,71 @@ class UserDBCalls {
             }
         });
     };
+
+    public findUsersByCompanyName(req: Request, res: Response) {
+        return new Promise((resolve, reject) => {
+            try {
+                UserModel.find()
+                    .populate('createdBy company role', '-password -__v')
+                    .exec(users => {
+                        var data: any = [];
+                        for (let i in users) {
+                            if (users[i].company.includes(req.params.company)) {
+                                data.push(users[i]);
+                            }
+                        }
+                        if (data.length > 0) {
+                            resolve(data);
+                        } else {
+                            reject(data);
+                        }
+                    });
+            } catch (error) {
+                res.status(500).json({ error });
+            }
+        });
+    };
+
+    public findUsersByRoleName(req: Request, res: Response) {
+        return new Promise((resolve, reject) => {
+            try {
+                UserModel.find()
+                    .populate('createdBy company role', '-password -__v')
+                    .then((users: any[]) => {
+                        let data: any[] = [];
+                        for (let i: number = 0; i < users.length; i++) {
+                            for (let j: number = 0; j < users[i].role.length; j++) {
+                                if (users[i].role[j].name === req.params.role) {
+                                    data.push(users[i]);
+                                }
+                            }
+                        }
+                        if (data.length > 0) {
+                            resolve(data);
+                        } else {
+                            reject(data);
+                        }
+                    })
+                // .exec(users => {
+                //     console.log(users);
+                //     var data: any = [];
+                //     for (let i in users) {
+                //         if (users[i].role.includes(req.params.role)) {
+                //             data.push(users[i]);
+                //         }
+                //     }
+                //     if (data.length > 0) {
+                //         resolve(data);
+                //     } else {
+                //         reject(data);
+                //     }
+                // });
+            } catch (error) {
+                res.status(500).json({ error });
+            }
+        });
+    };
+
 
     public createUser = (user, req: Request, res: Response) => {
         return new Promise(resolve => {
@@ -161,13 +226,13 @@ class UserDBCalls {
                                 city: authenticate_user_email.city,
                                 country: authenticate_user_email.country,
                                 locationChange:
-                                    authenticate_user_email.locationChange,
+                                authenticate_user_email.locationChange,
                                 jobType: authenticate_user_email.jobType,
                                 experience: authenticate_user_email.experience,
                                 gender: authenticate_user_email.gender,
                                 DoB: authenticate_user_email.DoB,
                                 additionalInfo:
-                                    authenticate_user_email.additionalInfo,
+                                authenticate_user_email.additionalInfo,
                                 token: 'JWT ' + token
                             };
                             resolve(result);
@@ -175,7 +240,7 @@ class UserDBCalls {
                         } else {
                             res.status(400).send({
                                 message:
-                                    "User with that credentials don't exist!"
+                                "User with that credentials don't exist!"
                             });
                         }
                     }

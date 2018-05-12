@@ -23,10 +23,10 @@ export const JobSchema: mongoose.Schema = new mongoose.Schema({
         required: true,
         enum: ['partTime', 'fullTime']
     },
-    keywords: {
+    keywords: [{
         type: String,
         required: true
-    },
+    }],
     categories: {
         type: String,
         required: true
@@ -37,6 +37,11 @@ export const JobSchema: mongoose.Schema = new mongoose.Schema({
     },
     salary: {
         type: String,
+        required: true
+    },
+    company: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Company',
         required: true
     },
     active: {

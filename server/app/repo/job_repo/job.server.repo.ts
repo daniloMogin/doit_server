@@ -7,7 +7,7 @@ export default class JobDBCalls {
         return new Promise(resolve => {
             try {
                 JobModel.find()
-                    .populate('createdBy', '-password -__v')
+                    .populate('createdBy company', '-password -__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -24,7 +24,7 @@ export default class JobDBCalls {
         return new Promise(resolve => {
             try {
                 JobModel.findById(req.params.id)
-                    .populate('createdBy', '-password -__v')
+                    .populate('createdBy company', '-password -__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -41,7 +41,7 @@ export default class JobDBCalls {
         return new Promise(resolve => {
             try {
                 JobModel.find({ name: req.params.name })
-                    .populate('createdBy', '-password -__v')
+                    .populate('createdBy company', '-password -__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -58,7 +58,7 @@ export default class JobDBCalls {
         return new Promise(resolve => {
             try {
                 JobModel.find({ city: req.params.city })
-                    .populate('createdBy', '-password -__v')
+                    .populate('createdBy company', '-password -__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -75,7 +75,7 @@ export default class JobDBCalls {
         return new Promise(resolve => {
             try {
                 JobModel.find({ country: req.params.country })
-                    .populate('createdBy', '-password -__v')
+                    .populate('createdBy company', '-password -__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -90,11 +90,23 @@ export default class JobDBCalls {
 
     public findJobByKeyword(req: Request, res: Response) {
         return new Promise(resolve => {
+            const keyword: any = req.params.keyword;
             try {
-                JobModel.find({ keyword: req.params.keyword })
-                    .populate('createdBy', '-password -__v')
-                    .then(data => {
-                        resolve(data);
+                JobModel.find()
+                    .populate('createdBy company', '-password -__v')
+                    .then((data: any) => {
+                        let newData: any[] = [];
+                        for (let i: number = 0; i < data.length; i++) {
+
+                            if (!(data[i].keywords === null)) {
+                                for (let j: number = 0; j < data[i].keywords.length; j++) {
+                                    if (keyword === data[i].keywords[j]) {
+                                        newData.push(data[i]);
+                                    }
+                                }
+                            }
+                        }
+                        resolve(newData);
                     })
                     .catch(error => {
                         resolve(error);
@@ -109,7 +121,24 @@ export default class JobDBCalls {
         return new Promise(resolve => {
             try {
                 JobModel.find({ type: req.params.type })
-                    .populate('createdBy', '-password -__v')
+                    .populate('createdBy company', '-password -__v')
+                    .then(data => {
+                        resolve(data);
+                    })
+                    .catch(error => {
+                        resolve(error);
+                    });
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    }
+
+    public findJobByCompany(req: Request, res: Response) {
+        return new Promise(resolve => {
+            try {
+                JobModel.findOne({ company: req.params.companyId })
+                    .populate('createdBy company', '-__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -135,6 +164,7 @@ export default class JobDBCalls {
                     categories: job.categories,
                     experience: job.experience,
                     salary: job.salary,
+                    company: job.company,
                     active: job.active,
                     createdBy: job.createdBy
                 });
@@ -166,6 +196,7 @@ export default class JobDBCalls {
                     categories: job.categories,
                     experience: job.experience,
                     salary: job.salary,
+                    company: job.company,
                     active: job.active
                     // Not modifying created by ID,
                     // Maybe add another field to monitor this?

@@ -78,7 +78,7 @@ class UserController {
                     }
                 } catch (error) {
                     res.status(500).json({
-                        success: false, msg: 'Get user by id error ' + error
+                        success: false, msg: error
                     });
                 }
             } else {
@@ -106,7 +106,7 @@ class UserController {
                     }
                 } catch (error) {
                     res.status(500).json({
-                        success: false, msg: 'Get user by username error ' + error
+                        success: false, msg: error
                     });
                 }
             } else {
@@ -116,13 +116,12 @@ class UserController {
             }
         });
 
-    // TODO
     public getUserByCompany = (passport.authenticate('jwt', { session: false }),
         async (req: Request, res: Response) => {
             const token: string = func.getToken(req.headers);
             if (token) {
                 try {
-                    UserModel.findById(req.params.userId)
+                    const findUsers = await user_db.findUsersByCompanyName(req, res)
                         .then(data => {
                             res.status(200).json({ success: true, user: data });
                         })
@@ -131,7 +130,7 @@ class UserController {
                         });
                 } catch (error) {
                     res.status(500).json({
-                        success: false, msg: 'Get user by company ' + error
+                        success: false, msg: error
                     });
                 }
             } else {
@@ -141,13 +140,12 @@ class UserController {
             }
         });
 
-    // TODO
     public getUserByRole = (passport.authenticate('jwt', { session: false }),
         async (req: Request, res: Response) => {
             const token: string = func.getToken(req.headers);
             if (token) {
                 try {
-                    UserModel.findById(req.params.userId)
+                    const findUsers = await user_db.findUsersByRoleName(req, res)
                         .then(data => {
                             res.status(200).json({ success: true, user: data });
                         })
@@ -156,7 +154,7 @@ class UserController {
                         });
                 } catch (error) {
                     res.status(500).json({
-                        success: false, msg: 'Get user by role ' + error
+                        success: false, msg: error
                     });
                 }
             } else {
@@ -408,14 +406,33 @@ class UserController {
             const token: string = func.getToken(req.headers);
             if (token) {
                 try {
-                    const decodedUser = func.decodeToken(token)
+                    const decodedUser = await func.decodeToken(token)
+                    const user = {
+                        status: decodedUser.status,
+                        locationChange: decodedUser.locationChange,
+                        jobType: decodedUser.jobType,
+                        role: decodedUser.role,
+                        job: decodedUser.job,
+                        _id: decodedUser._id,
+                        name: decodedUser.name,
+                        lastname: decodedUser.lastname,
+                        email: decodedUser.email,
+                        city: decodedUser.city,
+                        country: decodedUser.country,
+                        experience: decodedUser.experience,
+                        gender: decodedUser.gender,
+                        DoB: decodedUser.DoB,
+                        additionalInfo: decodedUser.additionalInfo,
+                        createdAt: decodedUser.createdAt,
+                        updatedAt: decodedUser.updatedAt
+                    }
                     console.log('===================');
                     console.log('Current User : user.server.controller : 409');
                     console.log('===================');
                     console.log(decodedUser);
                     return res
                         .status(200)
-                        .json({ success: true, user: decodedUser })
+                        .json({ success: true, user: user })
                 } catch (err) {
                     console.error(err);
                 }

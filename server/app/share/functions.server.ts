@@ -15,10 +15,10 @@ const phoneno: RegExp = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
 const emailRegEx: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 interface DoB {
-	day: number;
-	month: number;
-	year: number;
-	message: string;
+    day: number;
+    month: number;
+    year: number;
+    message: string;
 }
 
 class Functions {
@@ -106,7 +106,7 @@ class Functions {
         }
     };
 
-    public validateRegister = (user, res: Response): any => {
+    public validateRegister = (user, res: express.Response): any => {
         const name_validate = this.validateStringEmptyMinMaxLenRegexpInput(
             user.name,
             'Name',
@@ -155,32 +155,32 @@ class Functions {
         );
         if (_.isObject(email_validate)) {
             return { error: email_validate };
-		}
-		const status_validate = this.validateEmptyInputTrim(user.status)
+        }
+        const status_validate = this.validateEmptyInputTrim(user.status)
         if (_.isObject(status_validate)) {
             return { error: status_validate };
-		}
-		const city_validate = this.validateEmptyInputTrim(user.city)
+        }
+        const city_validate = this.validateEmptyInputTrim(user.city)
         if (_.isObject(city_validate)) {
             return { error: city_validate };
-		}
-		const country_validate = this.validateEmptyInputTrim(user.country)
+        }
+        const country_validate = this.validateEmptyInputTrim(user.country)
         if (_.isObject(country_validate)) {
             return { error: country_validate };
-		}
-		const locationChange_validate = this.validateBoolean(user.locationChange, 'Location Change')
+        }
+        const locationChange_validate = this.validateBoolean(user.locationChange, 'Location Change')
         if (_.isObject(locationChange_validate)) {
             return { error: locationChange_validate };
-		}
-		const jobType_validate = this.validateEmptyInputTrim(user.jobType)
+        }
+        const jobType_validate = this.validateEmptyInputTrim(user.jobType)
         if (_.isObject(jobType_validate)) {
             return { error: jobType_validate };
-		}
-		const exper_validate = this.validateEmptyInputTrim(user.experience)
+        }
+        const exper_validate = this.validateEmptyInputTrim(user.experience)
         if (_.isObject(exper_validate)) {
             return { error: exper_validate };
-		}
-		const separatedDoB: DoB = this.separateDoB(user.DoB, 'DD/MM/YYYY');
+        }
+        const separatedDoB: DoB = this.separateDoB(user.DoB, 'DD/MM/YYYY');
         const day_validate = this.validateDayMonth(separatedDoB.day, 'Day', 1, 31);
         if (!_.isInteger(day_validate)) {
             return { error: day_validate };
@@ -192,7 +192,7 @@ class Functions {
         const year_validate = this.validateYear(separatedDoB.year, 'Year', 4);
         if (!_.isInteger(year_validate)) {
             return { error: year_validate };
-		}
+        }
         const birthday = `${year_validate}/${month_validate}/${day_validate}`;
         const birthday_validate = this.validateBirthday(
             birthday,
@@ -212,7 +212,7 @@ class Functions {
         );
         if (_.isObject(gender_validate)) {
             return { error: gender_validate };
-		}
+        }
         const additionalInfo_validate = this.validateStringEmptyMinMaxLenRegexpInput(
             user.additionalInfo,
             'Aditional info',
@@ -224,47 +224,47 @@ class Functions {
             return { error: name_validate };
         }
         const result = {
-			name: name_validate,
-			lastname: last_name_validate,
-			username: username_validate,
-			password: password_validate,
-			email: email_validate,
-			status: status_validate,
-			city: city_validate,
-			country: country_validate,
-			locationChange: locationChange_validate,
-			jobType: jobType_validate,
-			experience: exper_validate,
-			gender: gender_validate,
-			DoB: birthday,
-			additionalInfo: additionalInfo_validate,
-			role: user.roleIdArr
-		};
-		return result;
-	};
-	
-	private separateDoB(dateOfBirth: string, format: string) {
-		const delimiter = /['.', '\,', '-', '/']/;
-		const split_input = dateOfBirth.split(delimiter);
-		let result: DoB;		
-		if (split_input[1].length > 2 && Number(split_input[1]) > 12) {
-			result = {
-				day: 0,
-				month: 0,
-				year: 0,
-				message: `Correct format for input is ${format}`
-			}
-			return result
-		}
+            name: name_validate,
+            lastname: last_name_validate,
+            username: username_validate,
+            password: password_validate,
+            email: email_validate,
+            status: status_validate,
+            city: city_validate,
+            country: country_validate,
+            locationChange: locationChange_validate,
+            jobType: jobType_validate,
+            experience: exper_validate,
+            gender: gender_validate,
+            DoB: birthday,
+            additionalInfo: additionalInfo_validate,
+            role: user.roleIdArr
+        };
+        return result;
+    };
 
-		result = {
-			day: Number(split_input[0]),
-			month: Number(split_input[1]),
-			year: Number(split_input[2]),
-			message: 'success'
-		}
-		return result;
-	}
+    private separateDoB(dateOfBirth: string, format: string) {
+        const delimiter = /['.', '\,', '-', '/']/;
+        const split_input = dateOfBirth.split(delimiter);
+        let result: DoB;
+        if (split_input[1].length > 2 && Number(split_input[1]) > 12) {
+            result = {
+                day: 0,
+                month: 0,
+                year: 0,
+                message: `Correct format for input is ${format}`
+            }
+            return result
+        }
+
+        result = {
+            day: Number(split_input[0]),
+            month: Number(split_input[1]),
+            year: Number(split_input[2]),
+            message: 'success'
+        }
+        return result;
+    }
 
     /**
      * Check if string is empty,
@@ -579,15 +579,15 @@ class Functions {
             return {
                 message: `${name} must be whole number`
             };
-		}
-		const inputLength = Math.log(input) * Math.LOG10E + 1 | 0; // get number of digits
+        }
+        const inputLength = Math.log(input) * Math.LOG10E + 1 | 0; // get number of digits
         if (inputLength > max_len) {
             return {
                 message: `${name} can't have more then ${max_len} characters`
             };
         }
-		const full_year_now: Date = new Date();
-		const year_now: number = full_year_now.getFullYear();
+        const full_year_now: Date = new Date();
+        const year_now: number = full_year_now.getFullYear();
         if (input > year_now) {
             return {
                 message: `${name} can't be bigger that this year!`
@@ -616,7 +616,7 @@ class Functions {
         monthTemp: number,
         yearTemp: number
     ) => {
-		// console.log(`validateBirthday!!!`);
+        // console.log(`validateBirthday!!!`);
         if (input === '' || input === null || !input) {
             return {
                 message: `${name} can't be empty!`
@@ -638,7 +638,7 @@ class Functions {
             return {
                 message: `Year ${yearTemp}, ${month_name} had ${days_in_month} days. For - Month - you entered - ${dayTemp} -.`
             };
-		}
+        }
     };
 
     /**

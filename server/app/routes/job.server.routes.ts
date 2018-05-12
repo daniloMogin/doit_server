@@ -18,6 +18,7 @@ class JobRoutes {
         router.get(`${API_URI_ROOT}byCountry/:country`, controller.getJobsByCountry);
         router.get(`${API_URI_ROOT}byKeyword/:keyword`, controller.getJobsByKeyword);
         router.get(`${API_URI_ROOT}byType/:type`, controller.getJobsByType);
+        router.get(`${API_URI_ROOT}byCompany/:companyId`, controller.getJobsByCompany);
         router.put(`${API_URI_ROOT}:id`,controller.updateJob);
         router.delete(`${API_URI_ROOT}:id`, controller.deleteJob);
 

@@ -20,8 +20,8 @@ class UserRoutes {
         router.get(`${API_URI_ROOT}`, controller.getUsers);
         router.put(`${API_URI_ROOT}:userId`, controller.updateUser);
         router.get(`${API_URI_ROOT}:userId`, controller.getUserById);
-        // router.get(`${API_URI_ROOT}byCompany/:company`, controller.getUserByCompany);
-        // router.get(`${API_URI_ROOT}byRole/:role`, controller.getUserByRole);
+        router.get(`${API_URI_ROOT}byCompany/:company`, controller.getUserByCompany);
+        router.get(`${API_URI_ROOT}byRole/:role`, controller.getUserByRole);
 
         // router.get(`${API_URI_ROOT}render`, controller.renderUsers);
 

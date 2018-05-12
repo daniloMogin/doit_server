@@ -124,6 +124,24 @@ export default class JobController {
         }
     }
 
+    public async getJobsByCompany(req: Request, res: Response) {
+        try {
+            const findJobs: any = await job_db.findJobByCompany(req, res);
+            console.log(findJobs);
+            if (findJobs.length !== null) {
+                res.status(200).json({
+                    success: true, job: findJobs
+                });
+            } else {
+                res.status(500).json({
+                    success: false, msg: findJobs
+                });
+            }
+        } catch (err) {
+            console.error('Unable to fetch Jobs database, Error: ', err);
+        }
+    }
+
     public async getJobsByType(req: Request, res: Response) {
         try {
             const findJobs: any = await job_db.findJobByType(req, res);
@@ -146,16 +164,23 @@ export default class JobController {
         const token: string = func.getToken(req.headers);
         if (token) {
             const user = await func.decodeToken(token);
+            const keywords: string[] = await req.body.keywords.split(',');
+            let keywordsArr: string[] = [];
+            for (let i: number = 0; i < keywords.length; i++) {
+                keywordsArr.push(keywords[i].trim());
+            }
+
             const job = {
                 name: req.body.name,
                 description: req.body.description,
                 city: req.body.city,
                 country: req.body.country,
                 type: req.body.type,
-                keywords: req.body.keywords,
+                keywords: keywordsArr,
                 categories: req.body.categories,
                 experience: req.body.experience,
                 salary: req.body.salary,
+                company: req.body.company,
                 active: req.body.active,
                 createdBy: user._id
             };
@@ -189,16 +214,22 @@ export default class JobController {
         const token: string = func.getToken(req.headers);
         if (token) {
             const user = await func.decodeToken(token);
+            const keywords: string[] = await req.body.keywords.split(',');
+            let keywordsArr: string[] = [];
+            for (let i: number = 0; i < keywords.length; i++) {
+                keywordsArr.push(keywords[i].trim());
+            }
             const job = {
                 name: req.body.name,
                 description: req.body.description,
                 city: req.body.city,
                 country: req.body.country,
                 type: req.body.type,
-                keywords: req.body.keywords,
+                keywords: keywordsArr,
                 categories: req.body.categories,
                 experience: req.body.experience,
                 salary: req.body.salary,
+                company: req.body.company,
                 active: req.body.active,
                 createdBy: user._id
             };

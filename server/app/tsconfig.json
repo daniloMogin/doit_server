@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "lib": [
+        "es2016"
+    ],
     "noImplicitAny": false,
     "removeComments": true,
     "preserveConstEnums": true,
