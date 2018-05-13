@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jwt-simple';
+import * as _ from 'lodash';
 
 const config = require('./../../config/constants/constants');
 import UserModel from '../../models/user.server.model';
@@ -14,7 +15,7 @@ class UserDBCalls {
         return new Promise(resolve => {
             try {
                 UserModel.find()
-                    .populate('role')
+                    .populate('company role')
                     .exec((err, user) => {
                         if (err) throw err;
                         resolve(user);
@@ -29,7 +30,7 @@ class UserDBCalls {
         return new Promise(resolve => {
             try {
                 UserModel.findById(req.params.userId, '-password -__v')
-                    .populate('role')
+                    .populate('company role job.jobId')
                     .exec((err, user) => {
                         if (err) throw err;
                         resolve(user);
@@ -60,12 +61,14 @@ class UserDBCalls {
         return new Promise((resolve, reject) => {
             try {
                 UserModel.find()
-                    .populate('createdBy company role', '-password -__v')
-                    .exec(users => {
+                    .populate('company role', '-password -__v')
+                    .then((users: any) => {
                         var data: any = [];
                         for (let i in users) {
-                            if (users[i].company.includes(req.params.company)) {
-                                data.push(users[i]);
+                            if (!_.isNil(users[i].company)) {
+                                if (users[i].company.name = req.params.company) {
+                                    data.push(users[i]);
+                                }
                             }
                         }
                         if (data.length > 0) {
@@ -84,7 +87,7 @@ class UserDBCalls {
         return new Promise((resolve, reject) => {
             try {
                 UserModel.find()
-                    .populate('createdBy company role', '-password -__v')
+                    .populate('company role', '-password -__v')
                     .then((users: any[]) => {
                         let data: any[] = [];
                         for (let i: number = 0; i < users.length; i++) {
@@ -226,13 +229,13 @@ class UserDBCalls {
                                 city: authenticate_user_email.city,
                                 country: authenticate_user_email.country,
                                 locationChange:
-                                authenticate_user_email.locationChange,
+                                    authenticate_user_email.locationChange,
                                 jobType: authenticate_user_email.jobType,
                                 experience: authenticate_user_email.experience,
                                 gender: authenticate_user_email.gender,
                                 DoB: authenticate_user_email.DoB,
                                 additionalInfo:
-                                authenticate_user_email.additionalInfo,
+                                    authenticate_user_email.additionalInfo,
                                 token: 'JWT ' + token
                             };
                             resolve(result);
@@ -240,7 +243,7 @@ class UserDBCalls {
                         } else {
                             res.status(400).send({
                                 message:
-                                "User with that credentials don't exist!"
+                                    "User with that credentials don't exist!"
                             });
                         }
                     }
@@ -252,6 +255,96 @@ class UserDBCalls {
             }
         });
     };
+
+    public jobApply(userId, req: Request, res: Response) {
+        return new Promise((resolve, reject) => {
+            try {
+                UserModel.findById(userId)
+                    .populate('job.jobId')
+                    .then((user: any) => {
+                        if (user.job.length > 0) {
+                            console.log(req.params.jobId);
+                            for (
+                                let i: number = 0,
+                                userJobLen: number = user.job.length;
+                                i < userJobLen;
+                                i++
+                            ) {
+                                if (user.job[i].jobId._id == req.params.jobId) {
+                                    reject('User already applied to ' + user.job[i].jobId.name);
+                                }
+                            }
+                            user.job.push({
+                                state: 'applied',
+                                jobId: req.params.jobId
+                            });
+                            UserModel.findByIdAndUpdate(userId, {
+                                $set: {
+                                    job: user.job
+                                }
+                            }).then(data => {
+                                resolve(data);
+                            }).catch(error => {
+                                resolve(error);
+                            });
+                        } else {
+                            UserModel.findByIdAndUpdate(userId, {
+                                $set: {
+                                    job: [{
+                                        state: 'applied',
+                                        jobId: req.params.jobId
+                                    }]
+                                }
+                            }).then(data => {
+                                resolve(data);
+                            })
+                        }
+                    })
+            } catch (err) {
+                console.error(err);
+            }
+        })
+    }
+
+    public jobAccept(req: Request, res: Response) {
+        return new Promise((resolve, reject) => {
+            try {
+                UserModel.findById(req.params.userId)
+                    .then((user: any) => {
+                        if (user.job.length > 0) {
+                            for (
+                                let i: number = 0,
+                                userJobLen: number = user.job.length;
+                                i < userJobLen;
+                                i++
+                            ) {
+                                if (user.job[i].jobId == req.params.jobId) {
+                                    if (user.job[i].state === 'accepted') {
+                                        reject('User already accepted');
+                                    } else {
+                                        user.job[i].state = 'accepted';
+                                        UserModel.findByIdAndUpdate(req.params.userId, {
+                                            $set: {
+                                                job: user.job
+                                            }
+                                        }).then(data => {
+                                            resolve(data);
+                                        }).catch(error => {
+                                            resolve(error);
+                                        });
+                                    }
+                                }
+                            }
+                            reject('User not applied to this job');
+                        } else {
+                            reject('User has no active job listings');
+                        }
+                    })
+            } catch (err) {
+                console.error(err);
+            }
+        })
+    }
 }
 
 export = UserDBCalls;

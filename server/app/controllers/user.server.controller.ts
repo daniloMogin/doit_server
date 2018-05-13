@@ -442,5 +442,50 @@ class UserController {
                     .send({ success: false, msg: 'User is not authenticated!' });
             }
         });
+
+        public jobApply = (passport.authenticate('jwt', { session: false }),
+        async (req: Request, res: Response) => {
+            const token: string = func.getToken(req.headers);
+            if (token) {
+                try {
+                    const user = func.decodeToken(token);
+                    const applyJob = await user_db.jobApply(user._id, req, res);
+                    res
+                        .status(200)
+                        .json({
+                            success: true,
+                            msg: applyJob
+                        })
+                } catch (error) {
+                    res.status(500).json({ success: false, msg: 'Update user error ' + error });
+                }
+            } else {
+                return res
+                    .status(403)
+                    .send({ success: false, msg: 'User is not authenticated!' });
+            }
+        });
+
+        public jobAccept = (passport.authenticate('jwt', { session: false }),
+        async (req: Request, res: Response) => {
+            const token: string = func.getToken(req.headers);
+            if (token) {
+                try {
+                    const acceptJob = await user_db.jobAccept(req, res);
+                    res
+                        .status(200)
+                        .json({
+                            success: true,
+                            msg: acceptJob
+                        })
+                } catch (error) {
+                    res.status(500).json({ success: false, msg: 'Update user error ' + error });
+                }
+            } else {
+                return res
+                    .status(403)
+                    .send({ success: false, msg: 'User is not authenticated!' });
+            }
+        });
 }
 export = UserController;

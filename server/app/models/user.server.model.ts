@@ -82,12 +82,18 @@ export const UserSchema: Schema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Company'
     },
-    job: [
-        {
+    job: [{
+        state: {
+            type: String,
+            enum: ['applied', 'accepted', 'declined'],
+            required: true,
+            default: 'applied'
+        },
+        jobId: {
             type: Schema.Types.ObjectId,
             ref: 'Job'
         }
-    ]
+    }]
 }, { timestamps: true });
 
 export default model<IUser>('User', UserSchema);

@@ -1,14 +1,19 @@
 import * as express from 'express';
 import JobController from './../controllers/job.server.controller';
+import UserController = require('./../controllers/user.server.controller');
 
 const API_URI_ROOT = '/Jobs/';
 const router = express.Router();
 
 class JobRoutes {
-    constructor(private _jobController = new JobController()) {}
+    constructor(
+        private _jobController = new JobController(),
+        private _userController = new UserController()
+    ) { }
 
     get routes(): express.Router {
         const controller = this._jobController;
+        const userController = this._userController;
 
         router.post(`${API_URI_ROOT}`, controller.createJob);
         router.get(`${API_URI_ROOT}`, controller.getJobs);
@@ -19,8 +24,11 @@ class JobRoutes {
         router.get(`${API_URI_ROOT}byKeyword/:keyword`, controller.getJobsByKeyword);
         router.get(`${API_URI_ROOT}byType/:type`, controller.getJobsByType);
         router.get(`${API_URI_ROOT}byCompany/:companyId`, controller.getJobsByCompany);
-        router.put(`${API_URI_ROOT}:id`,controller.updateJob);
+        router.put(`${API_URI_ROOT}:id`, controller.updateJob);
         router.delete(`${API_URI_ROOT}:id`, controller.deleteJob);
+
+        router.get(`${API_URI_ROOT}:jobId/Apply`, userController.jobApply);
+        router.get(`${API_URI_ROOT}:jobId/Accept/:userId`, userController.jobAccept);
 
         return router;
     }
