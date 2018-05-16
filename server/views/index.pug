@@ -11,6 +11,11 @@ block content
         span (GET/POST)
     ul
         li /:_id (GET/PUT/DELETE)
+        ul
+            li /apply (POST)
+            li /remove (POST)
+            li /accept/:userId (POST)
+            li /decline/:userId (POST)
         li /byName/:name (GET)
         li /byCity/:city (GET)
         li /byCountry/:country (GET)
