@@ -6,6 +6,7 @@ const config = require('./../config/constants/constants');
 
 import UserModel from '../models/user.server.model';
 import { IUser } from './../models/interfaces/user.server.interface';
+import { decode } from '../../node_modules/@types/jwt-simple/index';
 
 const UserDBCalls = require('../repo/user_repo/user.server.repo');
 const RoleDBCalls = require('../repo/role_repo/role.server.repo');
@@ -407,32 +408,42 @@ class UserController {
             if (token) {
                 try {
                     const decodedUser = await func.decodeToken(token)
-                    const user = {
-                        status: decodedUser.status,
-                        locationChange: decodedUser.locationChange,
-                        jobType: decodedUser.jobType,
-                        role: decodedUser.role,
-                        job: decodedUser.job,
-                        _id: decodedUser._id,
-                        name: decodedUser.name,
-                        lastname: decodedUser.lastname,
-                        email: decodedUser.email,
-                        city: decodedUser.city,
-                        country: decodedUser.country,
-                        experience: decodedUser.experience,
-                        gender: decodedUser.gender,
-                        DoB: decodedUser.DoB,
-                        additionalInfo: decodedUser.additionalInfo,
-                        createdAt: decodedUser.createdAt,
-                        updatedAt: decodedUser.updatedAt
-                    }
-                    console.log('===================');
-                    console.log('Current User : user.server.controller : 409');
-                    console.log('===================');
-                    console.log(decodedUser);
-                    return res
-                        .status(200)
-                        .json({ success: true, user: user })
+                    const userId = decodedUser._id;
+                    UserModel.findById(userId, '-password -__v')
+                        .populate('company role job.jobId', '-__v')
+                        .select('-job._id')
+                        .exec((err, user) => {
+                            if (err) throw err;
+                            return res
+                                .status(200)
+                                .json({ success: true, user: user });
+                        });
+                    // const user = {
+                    //     status: decodedUser.status,
+                    //     locationChange: decodedUser.locationChange,
+                    //     jobType: decodedUser.jobType,
+                    //     role: decodedUser.role,
+                    //     job: decodedUser.job,
+                    //     _id: decodedUser._id,
+                    //     name: decodedUser.name,
+                    //     lastname: decodedUser.lastname,
+                    //     email: decodedUser.email,
+                    //     city: decodedUser.city,
+                    //     country: decodedUser.country,
+                    //     experience: decodedUser.experience,
+                    //     gender: decodedUser.gender,
+                    //     DoB: decodedUser.DoB,
+                    //     additionalInfo: decodedUser.additionalInfo,
+                    //     createdAt: decodedUser.createdAt,
+                    //     updatedAt: decodedUser.updatedAt
+                    // }
+                    // console.log('===================');
+                    // console.log('Current User : user.server.controller : 409');
+                    // console.log('===================');
+                    // console.log(decodedUser);
+                    // return res
+                    //     .status(200)
+                    //     .json({ success: true, user: user })
                 } catch (err) {
                     console.error(err);
                 }
@@ -443,7 +454,7 @@ class UserController {
             }
         });
 
-        public jobApply = (passport.authenticate('jwt', { session: false }),
+    public jobApply = (passport.authenticate('jwt', { session: false }),
         async (req: Request, res: Response) => {
             const token: string = func.getToken(req.headers);
             if (token) {
@@ -466,7 +477,7 @@ class UserController {
             }
         });
 
-        public jobAccept = (passport.authenticate('jwt', { session: false }),
+    public jobAccept = (passport.authenticate('jwt', { session: false }),
         async (req: Request, res: Response) => {
             const token: string = func.getToken(req.headers);
             if (token) {
@@ -487,5 +498,51 @@ class UserController {
                     .send({ success: false, msg: 'User is not authenticated!' });
             }
         });
+
+    public jobRemove = (passport.authenticate('jwt', { session: false }),
+        async (req: Request, res: Response) => {
+            const token: string = func.getToken(req.headers);
+            if (token) {
+                try {
+                    const user = func.decodeToken(token);
+                    const removeJob = await user_db.jobRemove(user._id, req, res);
+                    res
+                        .status(200)
+                        .json({
+                            success: true,
+                            msg: removeJob
+                        })
+                } catch (error) {
+                    res.status(500).json({ success: false, msg: 'Update user error ' + error });
+                }
+            } else {
+                return res
+                    .status(403)
+                    .send({ success: false, msg: 'User is not authenticated!' });
+            }
+        });
+
+        public jobDecline = (passport.authenticate('jwt', { session: false }),
+        async (req: Request, res: Response) => {
+            const token: string = func.getToken(req.headers);
+            if (token) {
+                try {
+                    const declineJob = await user_db.jobDecline(req, res);
+                    res
+                        .status(200)
+                        .json({
+                            success: true,
+                            msg: declineJob
+                        })
+                } catch (error) {
+                    res.status(500).json({ success: false, msg: 'Update user error ' + error });
+                }
+            } else {
+                return res
+                    .status(403)
+                    .send({ success: false, msg: 'User is not authenticated!' });
+            }
+        });
+
 }
 export = UserController;

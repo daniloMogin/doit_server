@@ -7,6 +7,7 @@ export default class CompanyDBCalls {
         return new Promise(resolve => {
             try {
                 CompanyModel.find()
+                    .populate('createdBy', '-__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -22,6 +23,7 @@ export default class CompanyDBCalls {
         return new Promise(resolve => {
             try {
                 CompanyModel.findById(req.params.id)
+                    .populate('createdBy', '-__v')
                     .then(data => {
                         resolve(data);
                     })
@@ -43,7 +45,8 @@ export default class CompanyDBCalls {
                     country: company.country,
                     phone: company.phone,
                     email: company.email,
-                    website: company.website
+                    website: company.website,
+                    createdBy: company.createdBy
                 });
 
                 result
@@ -106,6 +109,7 @@ export default class CompanyDBCalls {
         return new Promise(resolve => {
             try {
                 CompanyModel.find({ name: req.params.name })
+                    .populate('createdBy', '-__v')
                     .then(data => {
                         resolve(data);
                     })

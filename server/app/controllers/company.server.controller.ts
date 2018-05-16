@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import CompanyModel from '../models/company.server.model';
+import UserModel from '../models/user.server.model';
 import CompanyDBCalls from '../repo/company_repo/company.server.repo';
 import { ICompany } from '../models/interfaces/company.server.interface';
 
@@ -73,16 +74,18 @@ export default class CompanyController {
     public async createCompany(req: Request, res: Response) {
         const token: string = func.getToken(req.headers);
         if (token) {
-            const company = {
-                name: req.body.name,
-                description: req.body.description,
-                city: req.body.city,
-                country: req.body.country,
-                phone: req.body.phone,
-                email: req.body.email,
-                website: req.body.website
-            };
             try {
+                const user = func.decodeToken(token);
+                const company = {
+                    name: req.body.name,
+                    description: req.body.description,
+                    city: req.body.city,
+                    country: req.body.country,
+                    phone: req.body.phone,
+                    email: req.body.email,
+                    website: req.body.website,
+                    createdBy: user._id
+                };
                 const createCompany: any = await company_db.createCompany(
                     company,
                     req,
@@ -93,9 +96,19 @@ export default class CompanyController {
                 ${createCompany}`
                 );
                 if (createCompany.errors === undefined) {
-                    res.status(200).json({
-                        success: true, msg: createCompany
-                    });
+                    UserModel.findByIdAndUpdate(company.createdBy,
+                        {
+                            $set: {
+                                company: createCompany._id
+                            }
+                        }).then(user => {
+                            res.status(200).json({
+                                success: true, msg: {
+                                    company: createCompany,
+                                    user: user
+                                }
+                            });
+                        })
                 } else {
                     res.status(500).json({ success: false, msg: createCompany });
                 }

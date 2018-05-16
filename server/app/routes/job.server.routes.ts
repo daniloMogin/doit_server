@@ -28,7 +28,9 @@ class JobRoutes {
         router.delete(`${API_URI_ROOT}:id`, controller.deleteJob);
 
         router.get(`${API_URI_ROOT}:jobId/Apply`, userController.jobApply);
+        router.get(`${API_URI_ROOT}:jobId/Remove`, userController.jobRemove);
         router.get(`${API_URI_ROOT}:jobId/Accept/:userId`, userController.jobAccept);
+        router.get(`${API_URI_ROOT}:jobId/Decline/:userId`, userController.jobDecline);
 
         return router;
     }

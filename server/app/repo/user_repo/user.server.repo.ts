@@ -15,7 +15,8 @@ class UserDBCalls {
         return new Promise(resolve => {
             try {
                 UserModel.find()
-                    .populate('company role')
+                    .populate('company role job.jobId', '-__v')
+                    .select('-job._id')
                     .exec((err, user) => {
                         if (err) throw err;
                         resolve(user);
@@ -30,7 +31,8 @@ class UserDBCalls {
         return new Promise(resolve => {
             try {
                 UserModel.findById(req.params.userId, '-password -__v')
-                    .populate('company role job.jobId')
+                    .populate('company role job.jobId', '-__v')
+                    .select('-job._id')
                     .exec((err, user) => {
                         if (err) throw err;
                         resolve(user);
@@ -45,6 +47,8 @@ class UserDBCalls {
         return new Promise(resolve => {
             try {
                 UserModel.findOne({ username: username })
+                    .populate('company role job.jobId', '-__v')
+                    .select('-job._id')
                     .then(data => {
                         resolve(data);
                     })
@@ -61,7 +65,8 @@ class UserDBCalls {
         return new Promise((resolve, reject) => {
             try {
                 UserModel.find()
-                    .populate('company role', '-password -__v')
+                    .populate('company role job.jobId', '-__v')
+                    .select('-job._id')
                     .then((users: any) => {
                         var data: any = [];
                         for (let i in users) {
@@ -87,7 +92,8 @@ class UserDBCalls {
         return new Promise((resolve, reject) => {
             try {
                 UserModel.find()
-                    .populate('company role', '-password -__v')
+                    .populate('company role job.jobId', '-__v')
+                    .select('-job._id')
                     .then((users: any[]) => {
                         let data: any[] = [];
                         for (let i: number = 0; i < users.length; i++) {
@@ -282,7 +288,8 @@ class UserDBCalls {
                                 $set: {
                                     job: user.job
                                 }
-                            }).then(data => {
+                            }
+                            ).then(data => {
                                 resolve(data);
                             }).catch(error => {
                                 resolve(error);
@@ -297,8 +304,12 @@ class UserDBCalls {
                                 }
                             }).then(data => {
                                 resolve(data);
+                            }).catch(error => {
+                                resolve(error);
                             })
                         }
+                    }).catch(error => {
+                        resolve(error);
                     })
             } catch (err) {
                 console.error(err);
@@ -327,7 +338,10 @@ class UserDBCalls {
                                             $set: {
                                                 job: user.job
                                             }
-                                        }).then(data => {
+                                        }, {
+                                                new: true
+                                            }
+                                        ).then(data => {
                                             resolve(data);
                                         }).catch(error => {
                                             resolve(error);
@@ -336,6 +350,107 @@ class UserDBCalls {
                                 }
                             }
                             reject('User not applied to this job');
+                        } else {
+                            reject('User has no active job listings');
+                        }
+                    }).catch(error => {
+                        resolve(error);
+                    })
+            } catch (err) {
+                console.error(err);
+            }
+        })
+    }
+
+    public jobRemove(userId, req: Request, res: Response) {
+        return new Promise((resolve, reject) => {
+            try {
+                UserModel.findById(userId)
+                    .then((user: any) => {
+                        if (user.job.length > 0) {
+                            let updating: boolean = false;
+                            let newJobs = [];
+                            for (
+                                let i: number = 0,
+                                userJobLen: number = user.job.length;
+                                i < userJobLen;
+                                i++
+                            ) {
+                                if (user.job[i].jobId == req.params.jobId) {
+                                    if (user.job[i].state === 'applied') {
+                                        updating = true;
+                                    } else {
+                                        newJobs.push(user.job[i]);
+                                    }
+                                } else {
+                                    newJobs.push(user.job[i]);
+                                }
+                            }
+                            if (updating) {
+                                UserModel.findByIdAndUpdate(userId, {
+                                    $set: {
+                                        job: newJobs
+                                    }
+                                }, {
+                                        new: true
+                                    }
+                                ).then(user => {
+                                    resolve(user);
+                                }).catch(error => {
+                                    resolve(error);
+                                })
+                            } else {
+                                reject('Job wasn\'t removed. Needs to be state applied in order to be removed');
+                            }
+                        } else {
+                            reject('User has no active job listings');
+                        }
+                    }).catch(error => {
+                        resolve(error);
+                    })
+            } catch (err) {
+                console.error(err);
+            }
+        })
+    }
+
+    public jobDecline(req: Request, res: Response) {
+        return new Promise((resolve, reject) => {
+            try {
+                UserModel.findById(req.params.userId)
+                    .then((user: any) => {
+                        if (user.job.length > 0) {
+                            for (
+                                let i: number = 0,
+                                userJobLen: number = user.job.length;
+                                i < userJobLen;
+                                i++
+                            ) {
+                                if (user.job[i].jobId == req.params.jobId) {
+                                    if (user.job[i].state === 'applied') {
+                                        user.job[i].state = 'declined';
+                                        UserModel.findByIdAndUpdate(req.params.userId, {
+                                            $set: {
+                                                job: user.job
+                                            }
+                                        }, {
+                                                new: true
+                                            }
+                                        ).then(user => {
+                                            resolve(user);
+                                        }).catch(error => {
+                                            resolve(error);
+                                        })
+                                    } else if (user.job[i].state === 'declined') {
+                                        reject('User already declined');
+                                    } else if (user.job[i].state === 'accepted') {
+                                        reject('User cannot be declined after being accepted');
+                                    } else {
+                                        reject('User not applied to this job');
+                                        // reject('What user state is this.. be gone infidel!');
+                                    }
+                                }
+                            }
                         } else {
                             reject('User has no active job listings');
                         }
