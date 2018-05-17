@@ -235,21 +235,30 @@ class UserDBCalls {
                                 city: authenticate_user_email.city,
                                 country: authenticate_user_email.country,
                                 locationChange:
-                                    authenticate_user_email.locationChange,
+                                authenticate_user_email.locationChange,
                                 jobType: authenticate_user_email.jobType,
                                 experience: authenticate_user_email.experience,
                                 gender: authenticate_user_email.gender,
                                 DoB: authenticate_user_email.DoB,
                                 additionalInfo:
-                                    authenticate_user_email.additionalInfo,
+                                authenticate_user_email.additionalInfo,
                                 token: 'JWT ' + token
                             };
-                            resolve(result);
+                            // resolve(result);
+                            UserModel.findById(result.id, '-password -__v')
+                                .populate('company role job.jobId', '-__v')
+                                .select('-job._id')
+                                .then(user => {
+                                    resolve(user);
+                                })
+                                .catch(error => {
+                                    resolve(error);
+                                })
                             return;
                         } else {
                             res.status(400).send({
                                 message:
-                                    "User with that credentials don't exist!"
+                                "User with that credentials don't exist!"
                             });
                         }
                     }
