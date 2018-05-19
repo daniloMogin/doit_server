@@ -248,8 +248,29 @@ class UserDBCalls {
                             UserModel.findById(result.id, '-password -__v')
                                 .populate('company role job.jobId', '-__v')
                                 .select('-job._id')
-                                .then(user => {
-                                    resolve(user);
+                                .then((user: any) => {
+                                    const userNToken = {
+                                        status: user.status,
+                                        locationChange: user.locationChange,
+                                        jobType: user.jobType,
+                                        role: user.role,
+                                        job: user.job,
+                                        _id: user._id,
+                                        name: user.name,
+                                        lastname: user.lastname,
+                                        email: user.email,
+                                        city: user.city,
+                                        country: user.country,
+                                        experience: user.experience,
+                                        gender: user.gender,
+                                        DoB: user.DoB,
+                                        additionalInfo: user.additionalInfo,
+                                        company: user.company,
+                                        createdAt: user.createdAt,
+                                        updatedAt: user.updatedAt,
+                                        token: 'JWT ' + token
+                                    }
+                                    resolve(userNToken);
                                 })
                                 .catch(error => {
                                     resolve(error);
